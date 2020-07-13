@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "mustache",
+        "repositoryURL": "https://github.com/AlwaysRightInstitute/mustache.git",
+        "state": {
+          "branch": null,
+          "revision": "72a467f35dcbe9fb7a40b41884ae0d0821401dc3",
+          "version": "0.5.9"
+        }
+      },
+      {
+        "package": "swift-argument-parser",
+        "repositoryURL": "https://github.com/apple/swift-argument-parser",
+        "state": {
+          "branch": null,
+          "revision": "eb51f949cdd0c9d88abba9ce79d37eb7ea1231d0",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "package": "swift-nio",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
+        "state": {
+          "branch": null,
+          "revision": "8a865bd15e69526cbdfcfd7c47698eb20b2ba951",
+          "version": "2.19.0"
+        }
+      },
+      {
+        "package": "swift-nio-ssl",
+        "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
+        "state": {
+          "branch": null,
+          "revision": "d381bc53edd9de88a75480a2b969bfc26d61ee76",
+          "version": "2.8.0"
+        }
+      },
+      {
+        "package": "SnapshotTesting",
+        "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
+        "state": {
+          "branch": null,
+          "revision": "2fd91357e90efe82bfa6845d1e7d5bc2f5025d35",
+          "version": "1.8.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
