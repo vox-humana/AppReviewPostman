@@ -18,5 +18,23 @@ jobs:
     - name: Archive binary
       uses: actions/upload-artifact@v1
       with:
-        name: Postman
+        name: postman-mac
+        path: .build/release/Postman
+  
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the app
+      run: swift build -c release
+
+    - name: Run tests
+      run: swift test
+    
+    - name: Archive binary
+      uses: actions/upload-artifact@v1
+      with:
+        name: postman-linux
         path: .build/release/Postman
