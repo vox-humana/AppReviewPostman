@@ -102,6 +102,7 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
 
     private var promise: EventLoopPromise<Data>?
     private var receivedData = Data()
+    private var httpError: HTTPError?
 
     init(_ promise: EventLoopPromise<Data>) {
         self.promise = promise
@@ -115,13 +116,21 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
             for (name, value) in httpResponseHeader.headers {
                 print("\(name): \(value)")
             }
+            if httpResponseHeader.status != .ok {
+                httpError = HTTPError(status: httpResponseHeader.status, response: nil)
+            }
         case let .body(byteBuffer):
             receivedData.append(contentsOf: byteBuffer.readableBytesView)
             let string = String(buffer: byteBuffer)
             print("Received: '\(string)' back from the server.")
         case .end:
             print("Closing channel.")
-            promise?.succeed(receivedData)
+            if var error = httpError {
+                error.response = receivedData
+                promise?.fail(error)
+            } else {
+                promise?.succeed(receivedData)
+            }
             promise = nil
         }
     }
@@ -136,4 +145,9 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
         promise?.succeed(receivedData)
         promise = nil
     }
+}
+
+struct HTTPError: Error {
+    let status: HTTPResponseStatus
+    var response: Data?
 }
