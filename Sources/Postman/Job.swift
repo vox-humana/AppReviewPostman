@@ -25,7 +25,7 @@ extension Job {
                     }
             }
             .map { reviews in
-                // sent only one the latest message if there is no previous history
+                // send only one the latest message if there is no previous history
                 if lastReviewId == 0 {
                     return Array(reviews.suffix(1))
                 }
@@ -41,10 +41,11 @@ extension Job {
                 )
             }
             .flatMap { [postURL] messages in
-                let sendFutures = messages.map { message, id in
-                    // TODO: detect application level errors (parse JSON? response)
-                    client
-                        .send(request: .init(postURL, method: .POST, body: message.data(using: .utf8)))
+                let sendFutures = messages.map { message, id -> EventLoopFuture<Int> in
+                    // TODO: different content type
+                    let body = message.data(using: .utf8).map { HTTPRequest.Body(data: $0, type: .json) }
+                    return client
+                        .send(request: .init(postURL, method: .POST, body: body))
                         .map { _ in id }
                 }
                 // execute one by one to return latest successful sent

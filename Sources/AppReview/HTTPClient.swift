@@ -3,36 +3,6 @@ import NIO
 import NIOHTTP1
 import NIOSSL
 
-public struct HTTPRequest {
-    let url: URL
-    let method: HTTPMethod
-    let body: Data?
-
-    public init(_ url: URL, method: HTTPMethod, body: Data?) {
-        self.url = url
-        self.method = method
-        self.body = body
-    }
-}
-
-extension HTTPRequest {
-    var host: String {
-        url.host ?? "localhost"
-    }
-
-    var uri: String {
-        var string = url.path.isEmpty ? "/" : url.path
-        if let query = url.query {
-            string += "?\(query)"
-        }
-        return string
-    }
-
-    var port: Int {
-        url.port ?? (url.scheme?.lowercased() == "https" ? 443 : 80)
-    }
-}
-
 public class HTTPClient {
     private let group: EventLoopGroup
     private let sslContext: NIOSSLContext
@@ -74,9 +44,9 @@ extension Channel {
             ("Accept", "*/*"),
         ])
 
-        if let data = request.body {
-            headers.add(name: "Content-Type", value: "application/json")
-            headers.add(name: "Content-Length", value: "\(data.count)")
+        if let body = request.body {
+            headers.add(name: "Content-Type", value: body.type.description)
+            headers.add(name: "Content-Length", value: "\(body.data.count)")
         }
 
         let requestHead = HTTPRequestHead(
@@ -88,7 +58,7 @@ extension Channel {
 
         write(HTTPClientRequestPart.head(requestHead), promise: nil)
 
-        if let data = request.body {
+        if let data = request.body?.data {
             let buffer = allocator.buffer(bytes: data)
             write(HTTPClientRequestPart.body(.byteBuffer(buffer)), promise: nil)
         }

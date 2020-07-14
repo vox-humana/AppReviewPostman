@@ -18,7 +18,7 @@ extension HTTPClient {
     }
 }
 
-extension URL {
+private extension URL {
     static func reviewFeedURL(for appId: String, countryCode: String) -> URL {
         URL(string: "https://itunes.apple.com/\(countryCode)/rss/customerreviews/id=\(appId)/sortBy=mostRecent/json")!
     }
