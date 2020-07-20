@@ -5,8 +5,9 @@ Swift script that checks new app store reviews in every App Store country, forma
 
 In this example postman sends two latest [Github iOS app](https://apps.apple.com/app/github/id1477376905) reviews from 🇸🇪Sweden and 🇦🇺Australian App Store to a [Telegram](https://telegram.org) channel:  
 ```
-./Postman --countries=au,se --post-url=https://api.telegram.org/bot${TOKEN}/sendMessage  
---template='{"chat_id": "'${CHAT_ID}'", "text": "{{stars}}\n{{message}}\n{{contry_flag}} {{author}}"}' 1477376905
+postman 1477376905 --countries=au,se  
+--post-url=https://api.telegram.org/bot${TOKEN}/sendMessage  
+--template='{"chat_id": "'${CHAT_ID}'", "text": "{{stars}}\n{{message}}\n{{contry_flag}} {{author}}"}'  
 ```
 > ★★★★★  
 > GitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!  
@@ -14,8 +15,9 @@ In this example postman sends two latest [Github iOS app](https://apps.apple.com
 
 The same use case but posting in [TamTam](https://tamtam.chat) channel instead:
 ```
-./Postman --countries=au,se --post-url="https://botapi.tamtam.chat/messages?access_token=${TOKEN}&chat_id=${CHAT_ID}"  
---template='{"text": "{{stars}}\n{{message}}\n{{contry_flag}} {{author}}"}' 1477376905
+postman 1477376905 --countries=au,se  
+--post-url="https://botapi.tamtam.chat/messages?access_token=${TOKEN}&chat_id=${CHAT_ID}"  
+--template='{"text": "{{stars}}\n{{message}}\n{{contry_flag}} {{author}}"}'
 ```
 
 ### Full usage
