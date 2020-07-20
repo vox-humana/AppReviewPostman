@@ -7,13 +7,21 @@ struct Job {
     let countryCode: String
     let mustacheTemplate: String
     let postURL: URL
+    let translator: Watson?
+}
+
+extension Job {
+    struct Watson {
+        let url: URL
+        let apikey: String
+    }
 }
 
 extension Job {
     func run(group: EventLoopGroup, lastReviewId: Int) throws -> EventLoopFuture<Int> {
         let client = try HTTPClient(group: group)
 
-        return try HTTPClient(group: group)
+        return client
             .reviews(for: appId, countryCode: countryCode)
             .map { reviews in
                 reviews
@@ -30,6 +38,28 @@ extension Job {
                     return Array(reviews.suffix(1))
                 }
                 return reviews
+            }
+            .flatMap { [translator] (reviews: [Review]) -> EventLoopFuture<[Review]> in
+                let eventLoop = group.next()
+                let messageTranslate = { [eventLoop] (message: String) -> EventLoopFuture<String?> in
+                    guard let translator = translator else {
+                        return eventLoop.makeSucceededFuture(nil)
+                    }
+                    return client.translate(message: message, translator: translator, eventLoop: eventLoop)
+                }
+
+                let translateReviews = reviews.map { review -> EventLoopFuture<Review> in
+                    messageTranslate(review.message).map { translation in
+                        guard let translation = translation else { return review }
+                        return review.adding(translation: translation)
+                    }
+                }
+
+                let f0 = eventLoop.makeSucceededFuture([Review]())
+                let body = f0.fold(translateReviews) { (acc: [Review], u: Review) -> EventLoopFuture<[Review]> in
+                    eventLoop.makeSucceededFuture(acc + [u])
+                }
+                return body
             }
             .map { [countryCode, mustacheTemplate] (reviews: [Review]) -> [(String, Int)] in
                 Array(

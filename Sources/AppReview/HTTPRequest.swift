@@ -20,11 +20,13 @@ public struct HTTPRequest {
     let url: URL
     let method: HTTPMethod
     let body: Body?
+    let headers: [String: String]
 
-    public init(_ url: URL, method: HTTPMethod, body: Body?) {
+    public init(_ url: URL, method: HTTPMethod, body: Body?, headers: [String: String] = [:]) {
         self.url = url
         self.method = method
         self.body = body
+        self.headers = headers
     }
 }
 

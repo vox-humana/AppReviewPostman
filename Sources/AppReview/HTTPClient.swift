@@ -49,6 +49,10 @@ extension Channel {
             headers.add(name: "Content-Length", value: "\(body.data.count)")
         }
 
+        request.headers.forEach { key, value in
+            headers.add(name: key, value: value)
+        }
+
         let requestHead = HTTPRequestHead(
             version: HTTPVersion(major: 1, minor: 1),
             method: request.method,

@@ -20,15 +20,21 @@ The same use case but posting in [TamTam](https://tamtam.chat) channel instead:
 
 ### Full usage
 ```
-USAGE: get-feed <app-id> [--countries <countries>] --template <template> --post-url <post-url> [--storage-file <storage-file>]
+USAGE: postman <app-id> [--countries <countries>] --template <template> --post-url <post-url> [--storage-file <storage-file>] [--translator <translator>]
 
 ARGUMENTS:
-  <app-id>                App identifier to get feed for 
+  <app-id>                App identifier 
 
 OPTIONS:
   --countries <countries> Comma-separated list of country codes 
-  --template <template>   Mustache template for formatting reviews 
-  --post-url <post-url>   Callback URL where a review will be posted to 
+  --template <template>   Mustache template for formatting reviews. Supported
+                          keys: author, country, country_flag, message,
+                          translated_message, stars 
+  --post-url <post-url>   Callback url for sending formatted messages 
   --storage-file <storage-file>
-                          Last sent review file path 
+                          Last sent reviews file path 
+  --translator <translator>
+                          IBM Language Translator url and apikey in
+                          {url},{apikey} format 
+  -h, --help              Show help information.
 ```

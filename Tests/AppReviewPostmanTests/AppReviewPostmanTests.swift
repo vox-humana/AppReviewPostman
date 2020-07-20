@@ -17,13 +17,12 @@ final class AppReviewPostmanTests: XCTestCase {
         let reviews = feed.feed.entry.compactMap(Review.init)
 
         let template = """
-        {{stars}}\n{{message}}\n{{author}}({{contry_flag}} {{country}})
+        {{stars}}\n{{message}}\n{{author}}({{country_flag}} {{country}})
         """
         let parser = MustacheParser()
         let tree = parser.parse(string: template)
 
         let result = reviews.map { $0.mustacheDict(for: countryCode) }.map(tree.render(object:))
-        print(result)
         _assertInlineSnapshot(matching: result, as: .dump, with: #"""
         ▿ 7 elements
           - "★★★★★\nGitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!\nph7enry(🇦🇺 Australia)"
@@ -34,6 +33,38 @@ final class AppReviewPostmanTests: XCTestCase {
           - "★★★★★\nI have been waiting for Github to make the move to mobile platforms, I still think there is still more functionality needed, but it’s a great start!\nTydewest(🇦🇺 Australia)"
           - "★★★★★\nWaiting for this for so long!!!!! I can finally interact with my team members on GitHub on the go!\nPlak 13(🇦🇺 Australia)"
         """#)
+    }
+
+    func testTranslationFormat() throws {
+        let template = """
+        {{stars}}
+        {{#translated_message}}{{{translated_message}}} (translated){{/translated_message}}{{^translated_message}}{{{message}}}{{/translated_message}}
+        {{author}} {{country_flag}}{{country}}
+        """
+        let parser = MustacheParser()
+        let tree = parser.parse(string: template)
+
+        let review = Review(
+            id: 1,
+            author: "John Doe",
+            message: "Might be <better> 🤔",
+            rating: 3,
+            translatedMessage: nil
+        )
+        let renderedReview = tree.render(object: review.mustacheDict(for: "se"))
+        _assertInlineSnapshot(matching: renderedReview, as: .description, with: """
+        ★★★☆☆
+        Might be <better> 🤔
+        John Doe 🇸🇪Sweden
+        """)
+
+        let translated = review.adding(translation: ">Perfect< app 👌")
+        let translatedReview = tree.render(object: translated.mustacheDict(for: "se"))
+        _assertInlineSnapshot(matching: translatedReview, as: .description, with: """
+        ★★★☆☆
+        >Perfect< app 👌 (translated)
+        John Doe 🇸🇪Sweden
+        """)
     }
 
     func testCountryFlag() {

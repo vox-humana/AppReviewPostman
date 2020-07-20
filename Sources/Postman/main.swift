@@ -10,29 +10,30 @@ defer {
 
 typealias SentStorage = [String: Int]
 
-struct GetFeed: ParsableCommand {
-    @Argument(help: "App identifier to get feed for")
+struct Postman: ParsableCommand {
+    @Argument(help: "App identifier")
     var appId: String
 
     @Option(help: "Comma-separated list of country codes")
     var countries: String?
 
-    @Option(help: "Mustache template for formatting reviews")
+    @Option(help: "Mustache template for formatting reviews. Supported keys: \(Review.MustacheKeys.allSupportedKeys)")
     var template: String
 
-    @Option(help: "Callback URL where a review will be posted to")
-    var postURL: String
+    @Option(help: "Callback url for sending formatted messages")
+    var postURL: URL
 
-    @Option(help: "Last sent review file path")
+    @Option(help: "Last sent reviews file path")
     var storageFile: String?
+
+    @Option(
+        help: "IBM Language Translator url and apikey in {url},{apikey} format",
+        transform: Job.Watson.init(string:)
+    )
+    var translator: Job.Watson?
 
     mutating func run() throws {
         let codes = (countries ?? allAppStoreCountries).components(separatedBy: ",")
-        guard let url = URL(string: postURL) else {
-            print("Wrong URL format")
-            return
-        }
-
         let storageURL = storageFile.map(URL.init(fileURLWithPath:))
         var storage = storageURL
             .flatMap { try? Data(contentsOf: $0) }
@@ -44,7 +45,8 @@ struct GetFeed: ParsableCommand {
                 appId: appId,
                 countryCode: code,
                 mustacheTemplate: template,
-                postURL: url
+                postURL: postURL,
+                translator: translator
             )
             .run(group: group, lastReviewId: storage[code] ?? 0)
             .always { _ in
@@ -74,4 +76,28 @@ struct GetFeed: ParsableCommand {
     }
 }
 
-GetFeed.main()
+Postman.main()
+
+// MARK: -
+
+private extension Review.MustacheKeys {
+    static var allSupportedKeys: String {
+        Self.allCases.map(\.rawValue).joined(separator: ", ")
+    }
+}
+
+extension URL: ExpressibleByArgument {
+    public init?(argument: String) {
+        self.init(string: argument)
+    }
+}
+
+private extension Job.Watson {
+    init(string: String) throws {
+        let values = string.components(separatedBy: ",")
+        guard values.count == 2, let url = URL(string: values[0]) else {
+            throw ValidationError("Not a valid value for 'url, apiKey' format")
+        }
+        self.init(url: url, apikey: values[1])
+    }
+}

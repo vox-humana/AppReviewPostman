@@ -39,5 +39,6 @@ extension Review {
         author = feedItem.author.name.label
         message = feedItem.content.label
         rating = Int(feedItem.rating.label) ?? 0
+        translatedMessage = nil
     }
 }
