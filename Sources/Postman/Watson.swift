@@ -13,6 +13,7 @@ extension HTTPClient {
                 requestData: .init(text: message)
             )
         else {
+            logger.error("Translation request is empty, ignoring translation")
             return eventLoop.makeSucceededFuture(nil)
         }
 
@@ -20,7 +21,10 @@ extension HTTPClient {
             .map { data in
                 try? JSONDecoder().decode(WatsonResponse.self, from: data).translations.first?.translation
             }
-            .recover { _ in nil }
+            .recover { error in
+                logger.error("Translation error: \(error)")
+                return nil
+            }
     }
 }
 

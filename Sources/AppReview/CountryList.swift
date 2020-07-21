@@ -7,12 +7,12 @@ ae,ag,ai,al,am,ao,ar,at,au,az,bb,be,bf,bg,bh,bj,bm,bn,bo,br,bs,bt,bw,by,bz,ca,cg
 func flag(country: String) -> String? {
     let scalars = country.uppercased().unicodeScalars
     if scalars.count != 2 {
-        assertionFailure("Unsupported country code \(country)")
+        logger.critical("Unsupported country code \(country)")
         return nil
     }
 
     let base: UInt32 = 127_397
-    return String(String.UnicodeScalarView(scalars.map { UnicodeScalar(base + $0.value)! }))
+    return String(String.UnicodeScalarView(scalars.compactMap { UnicodeScalar(base + $0.value) }))
 }
 
 func countryName(from countryCode: String) -> String? {

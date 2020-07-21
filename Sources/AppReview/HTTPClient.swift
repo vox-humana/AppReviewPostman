@@ -1,4 +1,5 @@
 import Foundation
+import Logging
 import NIO
 import NIOHTTP1
 import NIOSSL
@@ -14,6 +15,8 @@ public class HTTPClient {
     }
 
     public func send(request: HTTPRequest) -> EventLoopFuture<Data> {
+        var requestLogger = logger
+        requestLogger[metadataKey: "request-uuid"] = "\(UUID())"
         let promise: EventLoopPromise<Data> = group.next().makePromise(of: Data.self)
 
         return ClientBootstrap(group: group)
@@ -24,12 +27,13 @@ public class HTTPClient {
                     channel.pipeline.addHTTPClientHandlers()
                 }
                 .flatMap {
-                    channel.pipeline.addHandler(HTTPResponseHandler(promise))
+                    channel.pipeline.addHandler(HTTPResponseHandler(promise, logger: requestLogger))
                 }
             }
             .connect(host: request.host, port: request.port)
             .flatMap { channel in
-                channel.send(request: request)
+                requestLogger.info("Sending request...")
+                return channel.send(request: request)
             }
             .flatMap {
                 promise.futureResult
@@ -37,7 +41,7 @@ public class HTTPClient {
     }
 }
 
-extension Channel {
+private extension Channel {
     func send(request: HTTPRequest) -> EventLoopFuture<Void> {
         var headers = HTTPHeaders([
             ("Host", request.host),
@@ -74,11 +78,14 @@ extension Channel {
 private final class HTTPResponseHandler: ChannelInboundHandler {
     typealias InboundIn = HTTPClientResponsePart
 
+    private let logger: Logger
     private var promise: EventLoopPromise<Data>?
     private var receivedData = Data()
     private var httpError: HTTPError?
 
-    init(_ promise: EventLoopPromise<Data>) {
+    init(_ promise: EventLoopPromise<Data>, logger: Logger) {
+        logger.debug("Create response handler")
+        self.logger = logger
         self.promise = promise
     }
 
@@ -86,19 +93,18 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
         let httpResponsePart = unwrapInboundIn(data)
         switch httpResponsePart {
         case let .head(httpResponseHeader):
-            print("\(httpResponseHeader.version) \(httpResponseHeader.status.code) \(httpResponseHeader.status.reasonPhrase)")
-            for (name, value) in httpResponseHeader.headers {
-                print("\(name): \(value)")
-            }
             if httpResponseHeader.status != .ok {
                 httpError = HTTPError(status: httpResponseHeader.status, response: nil)
+                logger.error("Response: \(httpResponseHeader.status.code) \(httpResponseHeader.status.reasonPhrase)")
+            } else {
+                logger.info("Response: \(httpResponseHeader.status.code) \(httpResponseHeader.status.reasonPhrase)")
             }
+            logger.debug("Headers: \(httpResponseHeader.headers)")
         case let .body(byteBuffer):
             receivedData.append(contentsOf: byteBuffer.readableBytesView)
-            let string = String(buffer: byteBuffer)
-            print("Received: '\(string)' back from the server.")
+            logger.debug("Received: '\(String(buffer: byteBuffer))' back from the server.")
         case .end:
-            print("Closing channel.")
+            logger.debug("Closing channel")
             if var error = httpError {
                 error.response = receivedData
                 promise?.fail(error)
@@ -115,7 +121,7 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
     }
 
     func errorCaught(context _: ChannelHandlerContext, error: Error) {
-        print("Error: ", error)
+        logger.error("Channel error: \(error)")
         promise?.succeed(receivedData)
         promise = nil
     }

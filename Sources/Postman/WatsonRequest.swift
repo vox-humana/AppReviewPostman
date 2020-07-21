@@ -9,9 +9,11 @@ struct WatsonRequestData: Encodable {
 extension HTTPRequest {
     init?(url: URL, apiKey: String, requestData: WatsonRequestData) {
         guard let authData = "apikey:\(apiKey)".data(using: .utf8) else {
+            logger.error("Cannot create data from apiKey")
             return nil
         }
         guard let data = try? JSONEncoder().encode(requestData) else {
+            logger.error("Cannot encode request data")
             return nil
         }
         self.init(

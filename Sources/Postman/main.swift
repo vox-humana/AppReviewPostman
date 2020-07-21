@@ -1,7 +1,16 @@
 import AppReview
 import ArgumentParser
 import Foundation
+import Logging
 import NIO
+
+let logLevel: Logger.Level = .info
+AppReview.logger.logLevel = logLevel
+let logger: Logger = {
+    var logger = Logger(label: "com.github.vox-humana.AppReviewPostman.Postman")
+    logger.logLevel = logLevel
+    return logger
+}()
 
 let group = MultiThreadedEventLoopGroup(numberOfThreads: 4)
 defer {
@@ -49,9 +58,6 @@ struct Postman: ParsableCommand {
                 translator: translator
             )
             .run(group: group, lastReviewId: storage[code] ?? 0)
-            .always { _ in
-                print("Done \(code)")
-            }
             .map { id in
                 (code, id)
             }
