@@ -5,7 +5,6 @@ import XCTest
 
 final class AppReviewPostmanTests: XCTestCase {
     func testFeedDecoding() throws {
-        let countryCode = "au"
         let url = URL(fileURLWithPath: #file)
             .deletingLastPathComponent()
             .appendingPathComponent("feed.json")
@@ -22,7 +21,7 @@ final class AppReviewPostmanTests: XCTestCase {
         let parser = MustacheParser()
         let tree = parser.parse(string: template)
 
-        let result = reviews.map { $0.mustacheDict(for: countryCode) }.map(tree.render(object:))
+        let result = reviews.map { $0.mustacheDict(for: .au) }.map(tree.render(object:))
         _assertInlineSnapshot(matching: result, as: .dump, with: #"""
         ▿ 7 elements
           - "★★★★★\nGitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!\nph7enry(🇦🇺 Australia)"
@@ -51,7 +50,8 @@ final class AppReviewPostmanTests: XCTestCase {
             rating: 3,
             translatedMessage: nil
         )
-        let renderedReview = tree.render(object: review.mustacheDict(for: "se"))
+
+        let renderedReview = tree.render(object: review.mustacheDict(for: .se))
         _assertInlineSnapshot(matching: renderedReview, as: .description, with: """
         ★★★☆☆
         Might be <better> 🤔
@@ -59,7 +59,7 @@ final class AppReviewPostmanTests: XCTestCase {
         """)
 
         let translated = review.adding(translation: ">Perfect< app 👌")
-        let translatedReview = tree.render(object: translated.mustacheDict(for: "se"))
+        let translatedReview = tree.render(object: translated.mustacheDict(for: .se))
         _assertInlineSnapshot(matching: translatedReview, as: .description, with: """
         ★★★☆☆
         >Perfect< app 👌 (translated)
@@ -68,16 +68,16 @@ final class AppReviewPostmanTests: XCTestCase {
     }
 
     func testCountryFlag() {
-        let codes = allAppStoreCountries.components(separatedBy: ",")
-        let flags = codes.compactMap(flag(country:))
+        let codes = CountryCode.allCases
+        let flags = codes.map(\.flag)
         _assertInlineSnapshot(matching: flags, as: .description, with: """
         ["🇦🇪", "🇦🇬", "🇦🇮", "🇦🇱", "🇦🇲", "🇦🇴", "🇦🇷", "🇦🇹", "🇦🇺", "🇦🇿", "🇧🇧", "🇧🇪", "🇧🇫", "🇧🇬", "🇧🇭", "🇧🇯", "🇧🇲", "🇧🇳", "🇧🇴", "🇧🇷", "🇧🇸", "🇧🇹", "🇧🇼", "🇧🇾", "🇧🇿", "🇨🇦", "🇨🇬", "🇨🇭", "🇨🇱", "🇨🇳", "🇨🇴", "🇨🇷", "🇨🇻", "🇨🇾", "🇨🇿", "🇩🇪", "🇩🇰", "🇩🇲", "🇩🇴", "🇩🇿", "🇪🇨", "🇪🇪", "🇪🇬", "🇪🇸", "🇫🇮", "🇫🇯", "🇫🇲", "🇫🇷", "🇬🇧", "🇬🇩", "🇬🇭", "🇬🇲", "🇬🇷", "🇬🇹", "🇬🇼", "🇬🇾", "🇭🇰", "🇭🇳", "🇭🇷", "🇭🇺", "🇮🇩", "🇮🇪", "🇮🇱", "🇮🇳", "🇮🇸", "🇮🇹", "🇯🇲", "🇯🇴", "🇯🇵", "🇰🇪", "🇰🇬", "🇰🇭", "🇰🇳", "🇰🇷", "🇰🇼", "🇰🇾", "🇰🇿", "🇱🇦", "🇱🇧", "🇱🇨", "🇱🇰", "🇱🇷", "🇱🇹", "🇱🇺", "🇱🇻", "🇲🇩", "🇲🇬", "🇲🇰", "🇲🇱", "🇲🇳", "🇲🇴", "🇲🇷", "🇲🇸", "🇲🇹", "🇲🇺", "🇲🇼", "🇲🇽", "🇲🇾", "🇲🇿", "🇳🇦", "🇳🇪", "🇳🇬", "🇳🇮", "🇳🇱", "🇳🇵", "🇳🇴", "🇳🇿", "🇴🇲", "🇵🇦", "🇵🇪", "🇵🇬", "🇵🇭", "🇵🇰", "🇵🇱", "🇵🇹", "🇵🇼", "🇵🇾", "🇶🇦", "🇷🇴", "🇷🇺", "🇸🇦", "🇸🇧", "🇸🇨", "🇸🇪", "🇸🇬", "🇸🇮", "🇸🇰", "🇸🇱", "🇸🇳", "🇸🇷", "🇸🇹", "🇸🇻", "🇸🇿", "🇹🇨", "🇹🇩", "🇹🇭", "🇹🇯", "🇹🇲", "🇹🇳", "🇹🇷", "🇹🇹", "🇹🇼", "🇹🇿", "🇺🇦", "🇺🇬", "🇺🇸", "🇺🇾", "🇺🇿", "🇻🇨", "🇻🇪", "🇻🇬", "🇻🇳", "🇾🇪", "🇿🇦", "🇿🇼"]
         """)
     }
 
     func testCountryName() {
-        let codes = allAppStoreCountries.components(separatedBy: ",")
-        let names = codes.compactMap(countryName(from:))
+        let codes = CountryCode.allCases
+        let names = codes.compactMap(\.countryName)
         _assertInlineSnapshot(matching: names, as: .description, with: """
         ["United Arab Emirates", "Antigua & Barbuda", "Anguilla", "Albania", "Armenia", "Angola", "Argentina", "Austria", "Australia", "Azerbaijan", "Barbados", "Belgium", "Burkina Faso", "Bulgaria", "Bahrain", "Benin", "Bermuda", "Brunei", "Bolivia", "Brazil", "Bahamas", "Bhutan", "Botswana", "Belarus", "Belize", "Canada", "Congo - Brazzaville", "Switzerland", "Chile", "China mainland", "Colombia", "Costa Rica", "Cape Verde", "Cyprus", "Czechia", "Germany", "Denmark", "Dominica", "Dominican Republic", "Algeria", "Ecuador", "Estonia", "Egypt", "Spain", "Finland", "Fiji", "Micronesia", "France", "United Kingdom", "Grenada", "Ghana", "Gambia", "Greece", "Guatemala", "Guinea-Bissau", "Guyana", "Hong Kong", "Honduras", "Croatia", "Hungary", "Indonesia", "Ireland", "Israel", "India", "Iceland", "Italy", "Jamaica", "Jordan", "Japan", "Kenya", "Kyrgyzstan", "Cambodia", "St. Kitts & Nevis", "South Korea", "Kuwait", "Cayman Islands", "Kazakhstan", "Laos", "Lebanon", "St. Lucia", "Sri Lanka", "Liberia", "Lithuania", "Luxembourg", "Latvia", "Moldova", "Madagascar", "North Macedonia", "Mali", "Mongolia", "Macao", "Mauritania", "Montserrat", "Malta", "Mauritius", "Malawi", "Mexico", "Malaysia", "Mozambique", "Namibia", "Niger", "Nigeria", "Nicaragua", "Netherlands", "Nepal", "Norway", "New Zealand", "Oman", "Panama", "Peru", "Papua New Guinea", "Philippines", "Pakistan", "Poland", "Portugal", "Palau", "Paraguay", "Qatar", "Romania", "Russia", "Saudi Arabia", "Solomon Islands", "Seychelles", "Sweden", "Singapore", "Slovenia", "Slovakia", "Sierra Leone", "Senegal", "Suriname", "São Tomé & Príncipe", "El Salvador", "Eswatini", "Turks & Caicos Islands", "Chad", "Thailand", "Tajikistan", "Turkmenistan", "Tunisia", "Turkey", "Trinidad & Tobago", "Taiwan", "Tanzania", "Ukraine", "Uganda", "United States", "Uruguay", "Uzbekistan", "St. Vincent & Grenadines", "Venezuela", "British Virgin Islands", "Vietnam", "Yemen", "South Africa", "Zimbabwe"]
         """)

@@ -5,7 +5,7 @@ import NIO
 
 struct Job {
     let appId: String
-    let countryCode: String
+    let countryCode: CountryCode
     let mustacheTemplate: String
     let postURL: URL
     let translator: Watson?

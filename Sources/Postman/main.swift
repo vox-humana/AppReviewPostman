@@ -4,7 +4,12 @@ import Foundation
 import Logging
 import NIO
 
-let logLevel: Logger.Level = .info
+#if DEBUG
+    let logLevel: Logger.Level = .debug
+#else
+    let logLevel: Logger.Level = .info
+#endif
+
 AppReview.logger.logLevel = logLevel
 let logger: Logger = {
     var logger = Logger(label: "com.github.vox-humana.AppReviewPostman.Postman")
@@ -17,14 +22,17 @@ defer {
     try! group.syncShutdownGracefully()
 }
 
-typealias SentStorage = [String: Int]
+typealias SentStorage = [CountryCode: Int]
 
 struct Postman: ParsableCommand {
     @Argument(help: "App identifier")
     var appId: String
 
-    @Option(help: "Comma-separated list of country codes")
-    var countries: String?
+    @Option(
+        help: "Comma-separated list of country codes",
+        transform: CountryCode.codes(from:)
+    )
+    var countries: [CountryCode]?
 
     @Option(help: "Mustache template for formatting reviews. Supported keys: \(Review.MustacheKeys.allSupportedKeys)")
     var template: String
@@ -42,14 +50,13 @@ struct Postman: ParsableCommand {
     var translator: Job.Watson?
 
     mutating func run() throws {
-        let codes = (countries ?? allAppStoreCountries).components(separatedBy: ",")
         let storageURL = storageFile.map(URL.init(fileURLWithPath:))
         var storage = storageURL
             .flatMap { try? Data(contentsOf: $0) }
             .flatMap { try? JSONDecoder().decode(SentStorage.self, from: $0) }
             ?? [:]
 
-        let futures = try codes.map { code in
+        let futures = try (countries ?? CountryCode.allCases).map { code in
             try Job(
                 appId: appId,
                 countryCode: code,
@@ -105,5 +112,19 @@ private extension Job.Watson {
             throw ValidationError("Not a valid value for 'url, apiKey' format")
         }
         self.init(url: url, apikey: values[1])
+    }
+}
+
+private extension CountryCode {
+    static func codes(from string: String) throws -> [CountryCode] {
+        try string
+            .components(separatedBy: ",")
+            .map { $0.lowercased() }
+            .map { code -> CountryCode in
+                guard let v = CountryCode(rawValue: code) else {
+                    throw ValidationError("Unsupported country code \(code)")
+                }
+                return v
+            }
     }
 }

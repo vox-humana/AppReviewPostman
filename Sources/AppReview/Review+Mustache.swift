@@ -18,19 +18,17 @@ extension Review {
         return String(repeating: "★", count: clamped) + String(repeating: "☆", count: maxRating - clamped)
     }
 
-    func mustacheDict(for countryCode: String) -> [MustacheKeys: Any] {
+    func mustacheDict(for countryCode: CountryCode) -> [MustacheKeys: Any] {
         var output: [MustacheKeys: Any] = [
             .author: author,
             .message: message,
             .stars: stars,
+            .country_flag: countryCode.flag,
         ]
         if let translation = translatedMessage {
             output[.translated_message] = translation
         }
-        if let flag = flag(country: countryCode) {
-            output[.country_flag] = flag
-        }
-        if let country = countryName(from: countryCode) {
+        if let country = countryCode.countryName {
             output[.country] = country
         }
         return output
@@ -38,7 +36,7 @@ extension Review {
 }
 
 extension Sequence where Element == Review {
-    public func format(template: String, countryCode: String) -> [String] {
+    public func format(template: String, countryCode: CountryCode) -> [String] {
         let tree = MustacheParser().parse(string: template)
         return map { $0.mustacheDict(for: countryCode) }
             .map(tree.render(object:))
