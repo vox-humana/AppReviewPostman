@@ -74,8 +74,7 @@ extension Job {
             .map { [countryCode, mustacheTemplate] (reviews: [Review]) -> [(String, Int)] in
                 Array(
                     zip(
-                        reviews.format(template: mustacheTemplate, countryCode: countryCode)
-                            .map { $0.replacingOccurrences(of: "\n", with: "\\n") },
+                        reviews.format(template: mustacheTemplate, countryCode: countryCode, jsonEscaping: true),
                         reviews.map(\.id)
                     )
                 )

@@ -1,5 +1,4 @@
 @testable import AppReview
-import mustache
 import SnapshotTesting
 import XCTest
 
@@ -18,10 +17,8 @@ final class AppReviewPostmanTests: XCTestCase {
         let template = """
         {{stars}}\n{{message}}\n{{author}}({{country_flag}} {{country}})
         """
-        let parser = MustacheParser()
-        let tree = parser.parse(string: template)
 
-        let result = reviews.map { $0.mustacheDict(for: .au) }.map(tree.render(object:))
+        let result = reviews.map { $0.format(template: template, countryCode: .au, jsonEscaping: false) }
         _assertInlineSnapshot(matching: result, as: .dump, with: #"""
         ▿ 7 elements
           - "★★★★★\nGitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!\nph7enry(🇦🇺 Australia)"
@@ -37,34 +34,56 @@ final class AppReviewPostmanTests: XCTestCase {
     func testTranslationFormat() throws {
         let template = """
         {{stars}}
-        {{#translated_message}}{{{translated_message}}} (translated){{/translated_message}}{{^translated_message}}{{{message}}}{{/translated_message}}
-        {{author}} {{country_flag}}{{country}}
+        {{#translated_message}}{{{translated_message}}}
+        (translated){{/translated_message}}{{^translated_message}}{{{message}}}{{/translated_message}}
+        {{{author}}} {{country_flag}}{{country}}
         """
-        let parser = MustacheParser()
-        let tree = parser.parse(string: template)
 
         let review = Review(
             id: 1,
-            author: "John Doe",
-            message: "Might be <better> 🤔",
+            author: "John\t\"Doe\"",
+            message: "Might\\ \"be <better>\"\n🤔",
             rating: 3,
             translatedMessage: nil
         )
 
-        let renderedReview = tree.render(object: review.mustacheDict(for: .se))
-        _assertInlineSnapshot(matching: renderedReview, as: .description, with: """
-        ★★★☆☆
-        Might be <better> 🤔
-        John Doe 🇸🇪Sweden
-        """)
+        let translated = review.adding(translation: "\">Perfect<\" app\t👌")
+        let formatted = { (review: Review, jsonEscaping: Bool) -> String in
+            review.format(template: template, countryCode: .se, jsonEscaping: jsonEscaping)
+        }
 
-        let translated = review.adding(translation: ">Perfect< app 👌")
-        let translatedReview = tree.render(object: translated.mustacheDict(for: .se))
-        _assertInlineSnapshot(matching: translatedReview, as: .description, with: """
-        ★★★☆☆
-        >Perfect< app 👌 (translated)
-        John Doe 🇸🇪Sweden
-        """)
+        do {
+            let jsonEscaping = false
+            _assertInlineSnapshot(matching: formatted(review, jsonEscaping), as: .description, with: #"""
+            ★★★☆☆
+            Might\ "be <better>"
+            🤔
+            John	"Doe" 🇸🇪Sweden
+            """#)
+
+            _assertInlineSnapshot(matching: formatted(translated, jsonEscaping), as: .description, with: #"""
+            ★★★☆☆
+            ">Perfect<" app	👌
+            (translated)
+            John	"Doe" 🇸🇪Sweden
+            """#)
+        }
+
+        do {
+            let jsonEscaping = true
+            _assertInlineSnapshot(matching: formatted(review, jsonEscaping), as: .description, with: #"""
+            ★★★☆☆
+            Might\\ \"be <better>\"\n🤔
+            John\t\"Doe\" 🇸🇪Sweden
+            """#)
+
+            _assertInlineSnapshot(matching: formatted(translated, jsonEscaping), as: .description, with: #"""
+            ★★★☆☆
+            \">Perfect<\" app\t👌
+            (translated)
+            John\t\"Doe\" 🇸🇪Sweden
+            """#)
+        }
     }
 
     func testCountryFlag() {
