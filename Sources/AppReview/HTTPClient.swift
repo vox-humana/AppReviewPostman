@@ -15,8 +15,7 @@ public class HTTPClient {
     }
 
     public func send(request: HTTPRequest) -> EventLoopFuture<Data> {
-        var requestLogger = logger
-        requestLogger[metadataKey: "request-uuid"] = "\(UUID())"
+        let requestLogger = logger.appending(metadata: "request-uuid", with: UUID().uuidString)
         let promise: EventLoopPromise<Data> = group.next().makePromise(of: Data.self)
 
         return ClientBootstrap(group: group)
@@ -33,7 +32,7 @@ public class HTTPClient {
             .connect(host: request.host, port: request.port)
             .flatMap { channel in
                 requestLogger.info("Sending request...")
-                return channel.send(request: request)
+                return channel.send(request: request, logger: requestLogger)
             }
             .flatMap {
                 promise.futureResult
@@ -42,7 +41,7 @@ public class HTTPClient {
 }
 
 private extension Channel {
-    func send(request: HTTPRequest) -> EventLoopFuture<Void> {
+    func send(request: HTTPRequest, logger: Logger) -> EventLoopFuture<Void> {
         var headers = HTTPHeaders([
             ("Host", request.host),
             ("Accept", "*/*"),
@@ -64,10 +63,12 @@ private extension Channel {
             headers: headers
         )
 
+        logger.debug("Request headers: '\(headers)'")
         write(HTTPClientRequestPart.head(requestHead), promise: nil)
 
         if let data = request.body?.data {
             let buffer = allocator.buffer(bytes: data)
+            logger.debug("Request body: '\(String(buffer: buffer))'")
             write(HTTPClientRequestPart.body(.byteBuffer(buffer)), promise: nil)
         }
 
@@ -99,7 +100,7 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
             } else {
                 logger.info("Response: \(httpResponseHeader.status.code) \(httpResponseHeader.status.reasonPhrase)")
             }
-            logger.debug("Headers: \(httpResponseHeader.headers)")
+            logger.debug("Resonse headers: \(httpResponseHeader.headers)")
         case let .body(byteBuffer):
             receivedData.append(contentsOf: byteBuffer.readableBytesView)
             logger.debug("Received: '\(String(buffer: byteBuffer))' back from the server.")
