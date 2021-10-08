@@ -25,18 +25,19 @@ postman 1477376905 --countries=au,se
 USAGE: postman <app-id> [--countries <countries>] --template <template> --post-url <post-url> [--storage-file <storage-file>] [--translator <translator>]
 
 ARGUMENTS:
-  <app-id>                App identifier 
+  <app-id>                App identifier
 
 OPTIONS:
   --countries <countries> Comma-separated list of country codes 
-  --template <template>   Mustache template for formatting reviews. Supported
-                          keys: author, country, country_flag, message,
-                          translated_message, stars 
-  --post-url <post-url>   Callback url for sending formatted messages 
+                          (default: all countries)
+  --template <template>   Mustache template for formatting reviews. 
+                          Supported keys: author, country, country_flag,
+                          message, translated_message, stars
+  --post-url <post-url>   Callback url for sending formatted messages
   --storage-file <storage-file>
-                          Last sent reviews file path 
+                          Last sent reviews file path
   --translator <translator>
                           IBM Language Translator url and apikey in
-                          {url},{apikey} format 
+                          {url},{apikey} format
   -h, --help              Show help information.
 ```

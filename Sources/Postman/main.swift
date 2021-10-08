@@ -29,12 +29,20 @@ struct Postman: ParsableCommand {
     var appId: String
 
     @Option(
-        help: "Comma-separated list of country codes",
+        help: """
+        Comma-separated list of country codes 
+        (default: all countries)
+        """,
         transform: CountryCode.codes(from:)
     )
     var countries: [CountryCode]?
 
-    @Option(help: "Mustache template for formatting reviews. Supported keys: \(Review.MustacheKeys.allSupportedKeys)")
+    @Option(
+        help: """
+        Mustache template for formatting reviews. 
+        Supported keys: \(Review.MustacheKeys.allSupportedKeys)
+        """
+    )
     var template: String
 
     @Option(help: "Callback url for sending formatted messages")
@@ -72,8 +80,7 @@ struct Postman: ParsableCommand {
 
         let results = try EventLoopFuture.whenAllComplete(futures, on: group.next()).wait()
         results.forEach { result in
-            if case let .success(tupple) = result {
-                let (code, id) = tupple
+            if case let .success((code, id)) = result {
                 storage[code] = id
             }
         }
