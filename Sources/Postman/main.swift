@@ -30,7 +30,7 @@ struct Postman: ParsableCommand {
 
     @Option(
         help: """
-        Comma-separated list of country codes 
+        Comma-separated list of two-letter country codes according to 'ISO 3166-1 alpha-2' 
         (default: all countries)
         """,
         transform: CountryCode.codes(from:)
@@ -126,7 +126,7 @@ private extension CountryCode {
     static func codes(from string: String) throws -> [CountryCode] {
         try string
             .components(separatedBy: ",")
-            .map { $0.lowercased() }
+            .map { $0.uppercased() }
             .map { code -> CountryCode in
                 guard let v = CountryCode(rawValue: code) else {
                     throw ValidationError("Unsupported country code \(code)")

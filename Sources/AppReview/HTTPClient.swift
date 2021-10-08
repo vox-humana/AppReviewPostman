@@ -100,7 +100,7 @@ private final class HTTPResponseHandler: ChannelInboundHandler {
             } else {
                 logger.info("Response: \(httpResponseHeader.status.code) \(httpResponseHeader.status.reasonPhrase)")
             }
-            logger.debug("Resonse headers: \(httpResponseHeader.headers)")
+            logger.debug("Response headers: \(httpResponseHeader.headers)")
         case let .body(byteBuffer):
             receivedData.append(contentsOf: byteBuffer.readableBytesView)
             logger.debug("Received: '\(String(buffer: byteBuffer))' back from the server.")

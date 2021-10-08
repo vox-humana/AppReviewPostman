@@ -28,16 +28,15 @@ ARGUMENTS:
   <app-id>                App identifier
 
 OPTIONS:
-  --countries <countries> Comma-separated list of country codes 
+  --countries <countries> Comma-separated list of two-letter country codes according to 'ISO 3166-1 alpha-2'
+
                           (default: all countries)
   --template <template>   Mustache template for formatting reviews. 
-                          Supported keys: author, country, country_flag,
-                          message, translated_message, stars
+                          Supported keys: author, country, country_flag, message, translated_message, stars
   --post-url <post-url>   Callback url for sending formatted messages
   --storage-file <storage-file>
                           Last sent reviews file path
   --translator <translator>
-                          IBM Language Translator url and apikey in
-                          {url},{apikey} format
+                          IBM Language Translator url and apikey in {url},{apikey} format
   -h, --help              Show help information.
 ```
