@@ -10,7 +10,7 @@ public class HTTPClient {
 
     public init(group: EventLoopGroup) throws {
         self.group = group
-        let configuration = TLSConfiguration.forClient()
+        let configuration = TLSConfiguration.makeClientConfiguration()
         sslContext = try NIOSSLContext(configuration: configuration)
     }
 

@@ -1,8 +1,8 @@
 import Foundation
 import NIO
 
-extension HTTPClient {
-    public func reviews(for appId: String, countryCode: CountryCode) -> EventLoopFuture<[Review]> {
+public extension HTTPClient {
+    func reviews(for appId: String, countryCode: CountryCode) -> EventLoopFuture<[Review]> {
         send(
             request: .init(
                 .reviewFeedURL(for: appId, countryCode: countryCode),

@@ -4,9 +4,7 @@ import XCTest
 
 final class AppReviewPostmanTests: XCTestCase {
     func testFeedDecoding() throws {
-        let url = URL(fileURLWithPath: #file)
-            .deletingLastPathComponent()
-            .appendingPathComponent("feed.json")
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "feed", withExtension: "json"))
 
         let data = try Data(contentsOf: url)
         let feed = try JSONDecoder().decode(ReviewsFeed.self, from: data)

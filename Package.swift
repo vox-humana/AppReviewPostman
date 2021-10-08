@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.5
 
 import PackageDescription
 
@@ -9,11 +9,11 @@ let package = Package(
         .executable(name: "Postman", targets: ["Postman"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
-        .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.0.0"),
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "0.2.0"),
-        .package(url: "https://github.com/AlwaysRightInstitute/mustache.git", from: "0.5.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.33.0"),
+        .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.16.1"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.1"),
+        .package(url: "https://github.com/AlwaysRightInstitute/mustache.git", from: "1.0.0"),
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.8.1"),
     ],
     targets: [
@@ -27,7 +27,7 @@ let package = Package(
                 "mustache",
             ]
         ),
-        .target(
+        .executableTarget(
             name: "Postman",
             dependencies: [
                 "AppReview",
@@ -42,6 +42,9 @@ let package = Package(
                 "AppReview",
                 "mustache",
                 "SnapshotTesting",
+            ],
+            resources: [
+                .copy("feed.json"),
             ]
         ),
     ]

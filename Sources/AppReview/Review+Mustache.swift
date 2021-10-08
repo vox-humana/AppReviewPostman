@@ -1,7 +1,7 @@
 import mustache
 
-extension Review {
-    public enum MustacheKeys: String, CaseIterable {
+public extension Review {
+    enum MustacheKeys: String, CaseIterable {
         case author
         case country
         case country_flag
@@ -36,16 +36,16 @@ extension Review {
     }
 }
 
-extension Review {
-    public func format(template: String, countryCode: CountryCode, jsonEscaping: Bool) -> String {
+public extension Review {
+    func format(template: String, countryCode: CountryCode, jsonEscaping: Bool) -> String {
         MustacheParser()
             .parse(string: template)
             .render(object: mustacheDict(for: countryCode, jsonEscaping: jsonEscaping))
     }
 }
 
-extension Sequence where Element == Review {
-    public func format(template: String, countryCode: CountryCode, jsonEscaping: Bool) -> [String] {
+public extension Sequence where Element == Review {
+    func format(template: String, countryCode: CountryCode, jsonEscaping: Bool) -> [String] {
         map { $0.format(template: template, countryCode: countryCode, jsonEscaping: jsonEscaping) }
     }
 }
@@ -59,7 +59,7 @@ private extension String {
             ("\r", #"\r"#),
             ("\"", #"\""#),
         ]
-        .reduce(self) { (result, char) -> String in
+        .reduce(self) { result, char -> String in
             result.replacingOccurrences(of: char.0, with: char.1)
         }
     }

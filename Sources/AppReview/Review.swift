@@ -6,8 +6,8 @@ public struct Review {
     let translatedMessage: String?
 }
 
-extension Review {
-    public func adding(translation: String) -> Self {
+public extension Review {
+    func adding(translation: String) -> Self {
         .init(
             id: id,
             author: author,
