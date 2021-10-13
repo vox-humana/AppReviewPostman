@@ -1,16 +1,20 @@
-@testable import AppReview
+@testable import Postman
 import SnapshotTesting
 import XCTest
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 
-final class AppReviewPostmanTests: XCTestCase {
+final class PostmanTests: XCTestCase {
     func testFeedDecoding() throws {
         let url = try XCTUnwrap(Bundle.module.url(forResource: "feed", withExtension: "json"))
 
         let data = try Data(contentsOf: url)
         let feed = try JSONDecoder().decode(ReviewsFeed.self, from: data)
-        XCTAssertEqual(feed.feed.entry.count, 7)
+        let entries = try XCTUnwrap(feed.feed.entry)
+        XCTAssertEqual(entries.count, 7)
 
-        let reviews = feed.feed.entry.compactMap(Review.init)
+        let reviews = entries.compactMap(Review.init(feedItem:))
 
         let template = """
         {{stars}}\n{{message}}\n{{author}}({{country_flag}} {{country}})
@@ -27,6 +31,21 @@ final class AppReviewPostmanTests: XCTestCase {
           - "★★★★★\nI have been waiting for Github to make the move to mobile platforms, I still think there is still more functionality needed, but it’s a great start!\nTydewest(🇦🇺 Australia)"
           - "★★★★★\nWaiting for this for so long!!!!! I can finally interact with my team members on GitHub on the go!\nPlak 13(🇦🇺 Australia)"
         """#)
+    }
+
+    func testSingleItemFeedDecoding() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "single_item_feed", withExtension: "json"))
+        let data = try Data(contentsOf: url)
+        let feed = try JSONDecoder().decode(ReviewsFeed.self, from: data)
+        let entries = try XCTUnwrap(feed.feed.entry)
+        XCTAssertEqual(entries.count, 1)
+    }
+
+    func testEmptyFeedDecoding() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "empty_feed", withExtension: "json"))
+        let data = try Data(contentsOf: url)
+        let feed = try JSONDecoder().decode(ReviewsFeed.self, from: data)
+        XCTAssertNil(feed.feed.entry)
     }
 
     func testTranslationFormat() throws {
@@ -107,7 +126,27 @@ final class AppReviewPostmanTests: XCTestCase {
         #endif
     }
 
-    static var allTests = [
-        ("testExample", testFeedDecoding),
-    ]
+    func testAllFeeds() throws {
+        // Can't use `async` annotation for test method on Linux
+        // https://bugs.swift.org/browse/SR-15230
+        let appId = "915056765" // Apple Maps
+        let allCountries = CountryCode.allCases
+        let expectations = allCountries.map { XCTestExpectation(description: $0.rawValue) }
+        Task {
+            await withThrowingTaskGroup(of: Void.self, body: { group in
+                for i in 0 ..< allCountries.count {
+                    group.addTask {
+                        let code = allCountries[i]
+                        do {
+                            _ = try await URLSession.shared.reviews(for: appId, countryCode: code)
+                        } catch {
+                            XCTFail("\(code) feed request failed \(error)")
+                        }
+                        expectations[i].fulfill()
+                    }
+                }
+            })
+        }
+        wait(for: expectations, timeout: 60)
+    }
 }

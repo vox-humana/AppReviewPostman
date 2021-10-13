@@ -1,6 +1,6 @@
 import mustache
 
-public extension Review {
+extension Review {
     enum MustacheKeys: String, CaseIterable {
         case author
         case country
@@ -36,17 +36,11 @@ extension Review {
     }
 }
 
-public extension Review {
+extension Review {
     func format(template: String, countryCode: CountryCode, jsonEscaping: Bool) -> String {
         MustacheParser()
             .parse(string: template)
             .render(object: mustacheDict(for: countryCode, jsonEscaping: jsonEscaping))
-    }
-}
-
-public extension Sequence where Element == Review {
-    func format(template: String, countryCode: CountryCode, jsonEscaping: Bool) -> [String] {
-        map { $0.format(template: template, countryCode: countryCode, jsonEscaping: jsonEscaping) }
     }
 }
 

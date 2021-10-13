@@ -1,30 +1,10 @@
-import AppReview
 import ArgumentParser
 import Foundation
 import Logging
-import NIO
-
-#if DEBUG
-    let logLevel: Logger.Level = .debug
-#else
-    let logLevel: Logger.Level = .info
-#endif
-
-AppReview.logger.logLevel = logLevel
-let logger: Logger = {
-    var logger = Logger(label: "com.github.vox-humana.AppReviewPostman.Postman")
-    logger.logLevel = logLevel
-    return logger
-}()
-
-let group = MultiThreadedEventLoopGroup(numberOfThreads: 4)
-defer {
-    try! group.syncShutdownGracefully()
-}
 
 typealias SentStorage = [CountryCode: Int]
 
-struct Postman: ParsableCommand {
+struct Postman: AsyncParsableCommand {
     @Argument(help: "App identifier")
     var appId: String
 
@@ -57,31 +37,29 @@ struct Postman: ParsableCommand {
     )
     var translator: Job.Watson?
 
-    mutating func run() throws {
+    mutating func runAsync() async throws {
         let storageURL = storageFile.map(URL.init(fileURLWithPath:))
         var storage = storageURL
             .flatMap { try? Data(contentsOf: $0) }
             .flatMap { try? JSONDecoder().decode(SentStorage.self, from: $0) }
             ?? [:]
 
-        let futures = try (countries ?? CountryCode.allCases).map { code in
-            try Job(
-                appId: appId,
-                countryCode: code,
-                mustacheTemplate: template,
-                postURL: postURL,
-                translator: translator
-            )
-            .run(group: group, lastReviewId: storage[code] ?? 0)
-            .map { id in
-                (code, id)
-            }
-        }
-
-        let results = try EventLoopFuture.whenAllComplete(futures, on: group.next()).wait()
-        results.forEach { result in
-            if case let .success((code, id)) = result {
-                storage[code] = id
+        for code in countries ?? CountryCode.allCases {
+            // TODO: run in parallel
+            do {
+                let lastSentId = try await Job(
+                    appId: appId,
+                    countryCode: code,
+                    mustacheTemplate: template,
+                    postURL: postURL,
+                    translator: translator
+                )
+                .run(lastReviewId: storage[code])
+                if let id = lastSentId {
+                    storage[code] = id
+                }
+            } catch {
+                logger.error("Failed to post reviews for \(code)")
             }
         }
 
@@ -96,7 +74,12 @@ struct Postman: ParsableCommand {
     }
 }
 
-Postman.main()
+@main
+enum MainApp {
+    static func main() async {
+        await Postman.main()
+    }
+}
 
 // MARK: -
 

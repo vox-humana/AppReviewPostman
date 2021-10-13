@@ -1,106 +1,103 @@
-import AppReview
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 import Logging
-import NIO
 
 struct Job {
-    let appId: String
-    let countryCode: CountryCode
-    let mustacheTemplate: String
-    let postURL: URL
-    let translator: Watson?
-}
-
-extension Job {
-    struct Watson {
-        let url: URL
-        let apikey: String
+    private let appId: String
+    private let countryCode: CountryCode
+    private let mustacheTemplate: String
+    private let postURL: URL
+    private let translator: Watson?
+    private let jobLogger: Logger
+    // TODO: mock URLSession for tests
+    private let transport: URLSession
+    init(
+        appId: String,
+        countryCode: CountryCode,
+        mustacheTemplate: String,
+        postURL: URL,
+        translator: Watson?
+    ) {
+        self.appId = appId
+        self.countryCode = countryCode
+        self.mustacheTemplate = mustacheTemplate
+        self.postURL = postURL
+        self.translator = translator
+        jobLogger = logger.appending(metadata: "\(appId):\(countryCode)", with: "job")
+        transport = URLSession.shared
     }
 }
 
 extension Job {
-    func run(group: EventLoopGroup, lastReviewId: Int) throws -> EventLoopFuture<Int> {
-        let jobLogger = logger.appending(metadata: "\(appId):\(countryCode)", with: "job")
-        jobLogger.info("Starting job")
-        let client = try HTTPClient(group: group)
+    func run(lastReviewId: Int?) async throws -> Int? {
+        defer {
+            jobLogger.info("Done")
+        }
+        jobLogger.info("Starting job with last review id: \(lastReviewId ?? 0)")
 
-        return client
-            .reviews(for: appId, countryCode: countryCode)
-            .map { reviews in
-                reviews
-                    .filter {
-                        $0.id > lastReviewId
-                    }
-                    .sorted {
-                        $0.id < $1.id
-                    }
-            }
-            .map { reviews in
-                // send only one the latest message if there is no previous history
-                if lastReviewId == 0 {
-                    jobLogger.info("No previous review id was provided, sending the last one")
-                    return Array(reviews.suffix(1))
-                }
-                return reviews
-            }
-            .flatMap { [translator] (reviews: [Review]) -> EventLoopFuture<[Review]> in
-                jobLogger.info("Translating reviews...")
-                let eventLoop = group.next()
-                let messageTranslate = { [eventLoop] (message: String) -> EventLoopFuture<String?> in
-                    guard let translator = translator else {
-                        return eventLoop.makeSucceededFuture(nil)
-                    }
-                    return client.translate(message: message, translator: translator, eventLoop: eventLoop)
-                }
+        let reviews: [Review] = try await requestReviews(lastReviewId: lastReviewId)
+        let translatedReviews = try await translate(reviews: reviews)
+        return await posting(reviews: translatedReviews)
+    }
 
-                let translateReviews = reviews.map { review -> EventLoopFuture<Review> in
-                    messageTranslate(review.message).map { translation in
-                        jobLogger.info("Translating \(review.id) review...")
-                        guard let translation = translation else {
-                            jobLogger.info("No translation for \(review.id) review")
-                            return review
-                        }
-                        jobLogger.info("Got translation for \(review.id) review")
-                        return review.adding(translation: translation)
-                    }
-                }
+    private func requestReviews(lastReviewId: Int?) async throws -> [Review] {
+        let reviews: [Review] = try await transport.reviews(for: appId, countryCode: countryCode)
+        // send only one the latest message if there is no previous history
+        guard let lastReviewId = lastReviewId else {
+            jobLogger.info("No previous review id was provided, sending the last one")
+            return Array(reviews.suffix(1))
+        }
+        return reviews
+            .filter {
+                $0.id > lastReviewId
+            }
+            .sorted {
+                $0.id < $1.id
+            }
+    }
 
-                let f0 = eventLoop.makeSucceededFuture([Review]())
-                let body = f0.fold(translateReviews) { (acc: [Review], u: Review) -> EventLoopFuture<[Review]> in
-                    eventLoop.makeSucceededFuture(acc + [u])
-                }
-                return body
+    private func translate(reviews: [Review]) async throws -> [Review] {
+        guard let translator = translator else {
+            jobLogger.info("No translator, skipping translation")
+            return reviews
+        }
+        jobLogger.info("Translating reviews...")
+        var translatedReviews: [Review] = []
+        for review in reviews {
+            let request = try translator.makeRequest(requestData: .init(text: review.message))
+            let response: WatsonResponse = try await transport.value(for: request)
+            if let translation = response.translations.first?.translation {
+                jobLogger.info("Got translation for \(review.id) review")
+                translatedReviews.append(review.adding(translation: translation))
+            } else {
+                jobLogger.info("No translation for \(review.id) review")
+                translatedReviews.append(review)
             }
-            .map { [countryCode, mustacheTemplate] (reviews: [Review]) -> [(String, Int)] in
-                Array(
-                    zip(
-                        reviews.format(template: mustacheTemplate, countryCode: countryCode, jsonEscaping: true),
-                        reviews.map(\.id)
-                    )
-                )
+        }
+        return translatedReviews
+    }
+
+    private func posting(reviews: [Review]) async -> Int? {
+        var lastPostedReview: Int?
+        jobLogger.info("Posting reviews...")
+        for review in reviews {
+            let message = review.format(
+                template: mustacheTemplate,
+                countryCode: countryCode,
+                jsonEscaping: true
+            )
+            let request = URLRequest(url: postURL, jsonData: message.data(using: .utf8)!)
+            do {
+                try await transport.value(for: request)
+                jobLogger.info("Posted \(review.id) review")
+                lastPostedReview = review.id
+            } catch {
+                jobLogger.error("Failed to post \(review.id) review with \(error)")
+                return lastPostedReview
             }
-            .flatMap { [postURL] messages in
-                jobLogger.info("Posting reviews...")
-                let sendFutures = messages.map { message, id -> EventLoopFuture<Int> in
-                    // TODO: different content type
-                    let body = message.data(using: .utf8).map { HTTPRequest.Body(data: $0, type: .json) }
-                    return client
-                        .send(request: .init(postURL, method: .POST, body: body))
-                        .map { _ in
-                            jobLogger.info("Posted \(id) review")
-                            return id
-                        }
-                }
-                // execute one by one to return latest successful sent
-                let eventLoop = group.next()
-                let f0 = eventLoop.makeSucceededFuture(lastReviewId)
-                let body = f0.fold(sendFutures) { (_: Int, u: Int) -> EventLoopFuture<Int> in
-                    eventLoop.makeSucceededFuture(u)
-                }
-                return body
-            }
-            .always { _ in
-                jobLogger.info("Done")
-            }
+        }
+        return lastPostedReview
     }
 }

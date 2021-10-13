@@ -1,39 +1,37 @@
-import AppReview
 import Foundation
-import NIO
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 
-extension HTTPClient {
-    func translate(
-        message: String, translator: Job.Watson, eventLoop: EventLoop
-    ) -> EventLoopFuture<String?> {
-        guard
-            let request = HTTPRequest(
-                url: translator.url,
-                apiKey: translator.apikey,
-                requestData: .init(text: message)
-            )
-        else {
-            logger.error("Translation request is empty, ignoring translation")
-            return eventLoop.makeSucceededFuture(nil)
-        }
-
-        return send(request: request)
-            .map { data in
-                try? JSONDecoder().decode(WatsonResponse.self, from: data).translations.first?.translation
-            }
-            .recover { error in
-                logger.error("Translation error: \(error)")
-                return nil
-            }
-    }
+struct WatsonRequestData: Encodable {
+    let text: String
+    let target: String = "en"
 }
 
-private struct WatsonResponse: Decodable {
+struct WatsonResponse: Decodable {
+    struct Translation: Decodable {
+        let translation: String
+    }
+
     let translations: [Translation]
 }
 
-private extension WatsonResponse {
-    struct Translation: Decodable {
-        let translation: String
+extension Job {
+    struct Watson {
+        let url: URL
+        let apikey: String
+    }
+}
+
+extension Job.Watson {
+    func makeRequest(requestData: WatsonRequestData) throws -> URLRequest {
+        let authData = "apikey:\(apikey)".data(using: .utf8)!
+        let data = try JSONEncoder().encode(requestData)
+        var request = URLRequest(
+            url: url.appendingPathComponent("/v3/translate?version=2018-05-01"),
+            jsonData: data
+        )
+        request.setValue("Basic \(authData.base64EncodedString())", forHTTPHeaderField: "Authorization")
+        return request
     }
 }

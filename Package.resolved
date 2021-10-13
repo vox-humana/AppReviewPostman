@@ -29,24 +29,6 @@
         }
       },
       {
-        "package": "swift-nio",
-        "repositoryURL": "https://github.com/apple/swift-nio.git",
-        "state": {
-          "branch": null,
-          "revision": "6aa9347d9bc5bbfe6a84983aec955c17ffea96ef",
-          "version": "2.33.0"
-        }
-      },
-      {
-        "package": "swift-nio-ssl",
-        "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
-        "state": {
-          "branch": null,
-          "revision": "5e68c1ded15619bb281b273fa8c2d8fd7f7b2b7d",
-          "version": "2.16.1"
-        }
-      },
-      {
         "package": "SnapshotTesting",
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
