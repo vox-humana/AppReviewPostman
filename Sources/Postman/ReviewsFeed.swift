@@ -1,9 +1,6 @@
 import Foundation
-#if canImport(FoundationNetworking)
-    import FoundationNetworking
-#endif
 
-extension URLSession {
+extension NetworkTransport {
     func reviews(for appId: String, countryCode: CountryCode) async throws -> [Review] {
         let response: ReviewsFeed = try await value(
             from: URL.reviewFeedURL(for: appId, countryCode: countryCode)
@@ -12,7 +9,7 @@ extension URLSession {
     }
 }
 
-private extension URL {
+extension URL {
     static func reviewFeedURL(for appId: String, countryCode: CountryCode) -> URL {
         URL(string: "https://itunes.apple.com/\(countryCode.rawValue)/rss/customerreviews/id=\(appId)/sortBy=mostRecent/json")!
     }

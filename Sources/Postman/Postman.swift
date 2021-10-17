@@ -1,5 +1,8 @@
 import ArgumentParser
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 import Logging
 
 typealias SentStorage = [CountryCode: Int]
@@ -44,24 +47,15 @@ struct Postman: AsyncParsableCommand {
             .flatMap { try? JSONDecoder().decode(SentStorage.self, from: $0) }
             ?? [:]
 
-        for code in countries ?? CountryCode.allCases {
-            // TODO: run in parallel
-            do {
-                let lastSentId = try await Job(
-                    appId: appId,
-                    countryCode: code,
-                    mustacheTemplate: template,
-                    postURL: postURL,
-                    translator: translator
-                )
-                .run(lastReviewId: storage[code])
-                if let id = lastSentId {
-                    storage[code] = id
-                }
-            } catch {
-                logger.error("Failed to post reviews for \(code)")
-            }
-        }
+        await Job.runJobs(
+            appId: appId,
+            countryCodes: countries ?? CountryCode.allCases,
+            mustacheTemplate: template,
+            postURL: postURL,
+            translator: translator,
+            transport: URLSession.shared,
+            storage: &storage
+        )
 
         if let fileURL = storageURL {
             let encoder = JSONEncoder()
@@ -75,9 +69,53 @@ struct Postman: AsyncParsableCommand {
 }
 
 @main
-enum MainApp {
+enum App {
     static func main() async {
         await Postman.main()
+    }
+}
+
+extension Job {
+    static func runJobs(
+        appId: String,
+        countryCodes: [CountryCode],
+        mustacheTemplate: String,
+        postURL: URL,
+        translator: Watson?,
+        transport: NetworkTransport,
+        storage: inout SentStorage
+    ) async {
+        await withTaskGroup(of: (CountryCode, Int)?.self) { group in
+            for code in countryCodes {
+                let job = Job(
+                    appId: appId,
+                    countryCode: code,
+                    mustacheTemplate: mustacheTemplate,
+                    postURL: postURL,
+                    translator: translator,
+                    transport: transport
+                )
+                let lastSentId = storage[code]
+
+                group.addTask {
+                    do {
+                        guard let id = try await job.run(lastReviewId: lastSentId) else {
+                            return nil
+                        }
+                        return (job.countryCode, id)
+                    } catch {
+                        logger.error("Failed to post reviews for \(job.countryCode)")
+                        return nil
+                    }
+                }
+            }
+
+            for await result in group {
+                if let (code, id) = result {
+                    storage[code] = id
+                }
+            }
+        }
     }
 }
 

@@ -1,32 +1,33 @@
 import Foundation
 #if canImport(FoundationNetworking)
-    import FoundationNetworking
+    import struct FoundationNetworking.URLRequest
 #endif
 import Logging
 
 struct Job {
     private let appId: String
-    private let countryCode: CountryCode
+    let countryCode: CountryCode
     private let mustacheTemplate: String
     private let postURL: URL
     private let translator: Watson?
+    private let transport: NetworkTransport
     private let jobLogger: Logger
-    // TODO: mock URLSession for tests
-    private let transport: URLSession
+
     init(
         appId: String,
         countryCode: CountryCode,
         mustacheTemplate: String,
         postURL: URL,
-        translator: Watson?
+        translator: Watson?,
+        transport: NetworkTransport
     ) {
         self.appId = appId
         self.countryCode = countryCode
         self.mustacheTemplate = mustacheTemplate
         self.postURL = postURL
         self.translator = translator
+        self.transport = transport
         jobLogger = logger.appending(metadata: "\(appId):\(countryCode)", with: "job")
-        transport = URLSession.shared
     }
 }
 
@@ -47,7 +48,7 @@ extension Job {
         // send only one the latest message if there is no previous history
         guard let lastReviewId = lastReviewId else {
             jobLogger.info("No previous review id was provided, sending the last one")
-            return Array(reviews.suffix(1))
+            return Array(reviews.prefix(1))
         }
         return reviews
             .filter {
@@ -90,7 +91,7 @@ extension Job {
             )
             let request = URLRequest(url: postURL, jsonData: message.data(using: .utf8)!)
             do {
-                try await transport.value(for: request)
+                try await transport.send(request: request)
                 jobLogger.info("Posted \(review.id) review")
                 lastPostedReview = review.id
             } catch {

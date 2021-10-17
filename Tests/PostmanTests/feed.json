@@ -1,14 +1,519 @@
-{"feed":{"author":{"name":{"label":"iTunes Store"}, "uri":{"label":"http://www.apple.com/uk/itunes/"}}, "entry":[
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id305380170"}, "name":{"label":"ph7enry"}, "label":""}, "im:version":{"label":"1.2.2"}, "im:rating":{"label":"5"}, "id":{"label":"6184999566"}, "title":{"label":"The best"}, "content":{"label":"GitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}, 
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id894966880"}, "name":{"label":"CProetti"}, "label":""}, "im:version":{"label":"1.2.1"}, "im:rating":{"label":"1"}, "id":{"label":"6151828483"}, "title":{"label":"Cant sign in."}, "content":{"label":"Never used the app.  First time installing it. Straight after it installed I opened it and tried to sign in. I got a error message saying that I triggered an abuse mechanism. Your anti-abuse is too sensitive. In using 4G mobile data with no other devices connected, never used the app before now, and haven’t touched my phone in hours  prior to installing the app, so I don’t know what I could have possibly done to trigger your anti-abuse systems.\n\nMy device is an iPhone Xs Max. Location Chengdu. Network is 4G China Mobile.", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}, 
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id966141766"}, "name":{"label":"jfhukednyfuru"}, "label":""}, "im:version":{"label":"1.2.0"}, "im:rating":{"label":"1"}, "id":{"label":"6062329274"}, "title":{"label":"Cannot authorise in login"}, "content":{"label":"Horrible experience. Not usable.", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}, 
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id24902832"}, "name":{"label":"twomedia"}, "label":""}, "im:version":{"label":"1.0.0"}, "im:rating":{"label":"4"}, "id":{"label":"5682053825"}, "title":{"label":"Great app, missing one core feature."}, "content":{"label":"So far the app is great for conducting code review in the go. The only issue I have is there is no way to view commit history for a specific branch outside if the pull request UI. If this could be added in a future version that would easily make this app 5 stars.", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}, 
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id49385400"}, "name":{"label":"juhan_h"}, "label":""}, "im:version":{"label":"1.0.0"}, "im:rating":{"label":"5"}, "id":{"label":"5675910834"}, "title":{"label":"Code Reviews from the couch!"}, "content":{"label":"Thanks for having an iPad app!\nI can now review code from the couch, which was a thing I didn’t know I missed from my life.\nDo add the ability to mark files as reviewed, like on web.", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}, 
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id457776986"}, "name":{"label":"Tydewest"}, "label":""}, "im:version":{"label":"1.0.0"}, "im:rating":{"label":"5"}, "id":{"label":"5674695451"}, "title":{"label":"Honestly Great"}, "content":{"label":"I have been waiting for Github to make the move to mobile platforms, I still think there is still more functionality needed, but it’s a great start!", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}, 
-{"author":{"uri":{"label":"https://itunes.apple.com/au/reviews/id151290216"}, "name":{"label":"Plak 13"}, "label":""}, "im:version":{"label":"1.0.0"}, "im:rating":{"label":"5"}, "id":{"label":"5674216654"}, "title":{"label":"So good"}, "content":{"label":"Waiting for this for so long!!!!! I can finally interact with my team members on GitHub on the go!", "attributes":{"type":"text"}}, "link":{"attributes":{"rel":"related", "href":"https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"}}, "im:voteSum":{"label":"0"}, "im:contentType":{"attributes":{"term":"Application", "label":"Application"}}, "im:voteCount":{"label":"0"}}], "updated":{"label":"2020-07-12T05:26:35-07:00"}, "rights":{"label":"Copyright 2008 Apple Inc."}, "title":{"label":"iTunes Store: Customer Reviews"}, "icon":{"label":"http://itunes.apple.com/favicon.ico"}, "link":[
-{"attributes":{"rel":"alternate", "type":"text/html", "href":"https://music.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=au&id=800"}}, 
-{"attributes":{"rel":"self", "href":"https://itunes.apple.com/au/rss/customerreviews/id=1477376905/sortBy=mostRecent/json"}}, 
-{"attributes":{"rel":"first", "href":"https://itunes.apple.com/au/rss/customerreviews/page=1/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"}}, 
-{"attributes":{"rel":"last", "href":"https://itunes.apple.com/au/rss/customerreviews/page=1/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"}}, 
-{"attributes":{"rel":"previous", "href":"https://itunes.apple.com/au/rss/customerreviews/page=1/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"}}, 
-{"attributes":{"rel":"next", "href":"https://itunes.apple.com/au/rss/customerreviews/page=2/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"}}], "id":{"label":"https://itunes.apple.com/au/rss/customerreviews/id=1477376905/sortBy=mostRecent/json"}}}
+{
+    "feed":
+    {
+        "author":
+        {
+            "name":
+            {
+                "label": "iTunes Store"
+            },
+            "uri":
+            {
+                "label": "http://www.apple.com/uk/itunes/"
+            }
+        },
+        "entry":
+        [
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id305380170"
+                    },
+                    "name":
+                    {
+                        "label": "ph7enry"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.2.2"
+                },
+                "im:rating":
+                {
+                    "label": "5"
+                },
+                "id":
+                {
+                    "label": "6184999566"
+                },
+                "title":
+                {
+                    "label": "The best"
+                },
+                "content":
+                {
+                    "label": "GitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            },
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id894966880"
+                    },
+                    "name":
+                    {
+                        "label": "CProetti"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.2.1"
+                },
+                "im:rating":
+                {
+                    "label": "1"
+                },
+                "id":
+                {
+                    "label": "6151828483"
+                },
+                "title":
+                {
+                    "label": "Cant sign in."
+                },
+                "content":
+                {
+                    "label": "Never used the app.  First time installing it. Straight after it installed I opened it and tried to sign in. I got a error message saying that I triggered an abuse mechanism. Your anti-abuse is too sensitive. In using 4G mobile data with no other devices connected, never used the app before now, and haven’t touched my phone in hours  prior to installing the app, so I don’t know what I could have possibly done to trigger your anti-abuse systems.\n\nMy device is an iPhone Xs Max. Location Chengdu. Network is 4G China Mobile.",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            },
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id966141766"
+                    },
+                    "name":
+                    {
+                        "label": "jfhukednyfuru"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.2.0"
+                },
+                "im:rating":
+                {
+                    "label": "1"
+                },
+                "id":
+                {
+                    "label": "6062329274"
+                },
+                "title":
+                {
+                    "label": "Cannot authorise in login"
+                },
+                "content":
+                {
+                    "label": "Horrible experience. Not usable.",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            },
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id24902832"
+                    },
+                    "name":
+                    {
+                        "label": "twomedia"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.0.0"
+                },
+                "im:rating":
+                {
+                    "label": "4"
+                },
+                "id":
+                {
+                    "label": "5682053825"
+                },
+                "title":
+                {
+                    "label": "Great app, missing one core feature."
+                },
+                "content":
+                {
+                    "label": "So far the app is great for conducting code review in the go. The only issue I have is there is no way to view commit history for a specific branch outside if the pull request UI. If this could be added in a future version that would easily make this app 5 stars.",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            },
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id49385400"
+                    },
+                    "name":
+                    {
+                        "label": "juhan_h"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.0.0"
+                },
+                "im:rating":
+                {
+                    "label": "5"
+                },
+                "id":
+                {
+                    "label": "5675910834"
+                },
+                "title":
+                {
+                    "label": "Code Reviews from the couch!"
+                },
+                "content":
+                {
+                    "label": "Thanks for having an iPad app!\nI can now review code from the couch, which was a thing I didn’t know I missed from my life.\nDo add the ability to mark files as reviewed, like on web.",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            },
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id457776986"
+                    },
+                    "name":
+                    {
+                        "label": "Tydewest"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.0.0"
+                },
+                "im:rating":
+                {
+                    "label": "5"
+                },
+                "id":
+                {
+                    "label": "5674695451"
+                },
+                "title":
+                {
+                    "label": "Honestly Great"
+                },
+                "content":
+                {
+                    "label": "I have been waiting for Github to make the move to mobile platforms, I still think there is still more functionality needed, but it’s a great start!",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            },
+            {
+                "author":
+                {
+                    "uri":
+                    {
+                        "label": "https://itunes.apple.com/au/reviews/id151290216"
+                    },
+                    "name":
+                    {
+                        "label": "Plak 13"
+                    },
+                    "label": ""
+                },
+                "im:version":
+                {
+                    "label": "1.0.0"
+                },
+                "im:rating":
+                {
+                    "label": "5"
+                },
+                "id":
+                {
+                    "label": "5674216654"
+                },
+                "title":
+                {
+                    "label": "So good"
+                },
+                "content":
+                {
+                    "label": "Waiting for this for so long!!!!! I can finally interact with my team members on GitHub on the go!",
+                    "attributes":
+                    {
+                        "type": "text"
+                    }
+                },
+                "link":
+                {
+                    "attributes":
+                    {
+                        "rel": "related",
+                        "href": "https://itunes.apple.com/au/review?id=1477376905&type=Purple%20Software"
+                    }
+                },
+                "im:voteSum":
+                {
+                    "label": "0"
+                },
+                "im:contentType":
+                {
+                    "attributes":
+                    {
+                        "term": "Application",
+                        "label": "Application"
+                    }
+                },
+                "im:voteCount":
+                {
+                    "label": "0"
+                }
+            }
+        ],
+        "updated":
+        {
+            "label": "2020-07-12T05:26:35-07:00"
+        },
+        "rights":
+        {
+            "label": "Copyright 2008 Apple Inc."
+        },
+        "title":
+        {
+            "label": "iTunes Store: Customer Reviews"
+        },
+        "icon":
+        {
+            "label": "http://itunes.apple.com/favicon.ico"
+        },
+        "link":
+        [
+            {
+                "attributes":
+                {
+                    "rel": "alternate",
+                    "type": "text/html",
+                    "href": "https://music.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=au&id=800"
+                }
+            },
+            {
+                "attributes":
+                {
+                    "rel": "self",
+                    "href": "https://itunes.apple.com/au/rss/customerreviews/id=1477376905/sortBy=mostRecent/json"
+                }
+            },
+            {
+                "attributes":
+                {
+                    "rel": "first",
+                    "href": "https://itunes.apple.com/au/rss/customerreviews/page=1/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"
+                }
+            },
+            {
+                "attributes":
+                {
+                    "rel": "last",
+                    "href": "https://itunes.apple.com/au/rss/customerreviews/page=1/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"
+                }
+            },
+            {
+                "attributes":
+                {
+                    "rel": "previous",
+                    "href": "https://itunes.apple.com/au/rss/customerreviews/page=1/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"
+                }
+            },
+            {
+                "attributes":
+                {
+                    "rel": "next",
+                    "href": "https://itunes.apple.com/au/rss/customerreviews/page=2/id=1477376905/sortby=mostrecent/xml?urlDesc=/customerreviews/id=1477376905/sortBy=mostRecent/json"
+                }
+            }
+        ],
+        "id":
+        {
+            "label": "https://itunes.apple.com/au/rss/customerreviews/id=1477376905/sortBy=mostRecent/json"
+        }
+    }
+}
