@@ -39,7 +39,7 @@ extension Job {
         jobLogger.info("Starting job with last review id: \(lastReviewId ?? 0)")
 
         let reviews: [Review] = try await requestReviews(lastReviewId: lastReviewId)
-        let translatedReviews = try await translate(reviews: reviews)
+        let translatedReviews = await translate(reviews: reviews)
         return await posting(reviews: translatedReviews)
     }
 
@@ -59,7 +59,7 @@ extension Job {
             }
     }
 
-    private func translate(reviews: [Review]) async throws -> [Review] {
+    private func translate(reviews: [Review]) async -> [Review] {
         guard let translator = translator else {
             jobLogger.info("No translator, skipping translation")
             return reviews

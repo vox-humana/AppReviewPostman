@@ -25,13 +25,19 @@ extension Job {
 
 extension Job.Watson {
     func makeRequest(requestData: WatsonRequestData) throws -> URLRequest {
-        let authData = "apikey:\(apikey)".data(using: .utf8)!
         let data = try JSONEncoder().encode(requestData)
         var request = URLRequest(
-            url: url.appendingPathComponent("/v3/translate?version=2018-05-01"),
+            url: url.fullWatsonURL,
             jsonData: data
         )
+        let authData = "apikey:\(apikey)".data(using: .utf8)!
         request.setValue("Basic \(authData.base64EncodedString())", forHTTPHeaderField: "Authorization")
         return request
+    }
+}
+
+private extension URL {
+    var fullWatsonURL: URL {
+        URL(string: absoluteString + "/v3/translate?version=2018-05-01")!
     }
 }
