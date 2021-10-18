@@ -64,17 +64,21 @@ extension Job {
             jobLogger.info("No translator, skipping translation")
             return reviews
         }
-        jobLogger.info("Translating reviews...")
+        jobLogger.info("Translating \(reviews.count) review(s)...")
         var translatedReviews: [Review] = []
         for review in reviews {
-            let request = try translator.makeRequest(requestData: .init(text: review.message))
-            let response: WatsonResponse = try await transport.value(for: request)
-            if let translation = response.translations.first?.translation {
-                jobLogger.info("Got translation for \(review.id) review")
-                translatedReviews.append(review.adding(translation: translation))
-            } else {
-                jobLogger.info("No translation for \(review.id) review")
-                translatedReviews.append(review)
+            do {
+                let request = try translator.makeRequest(requestData: .init(text: review.message))
+                let response: WatsonResponse = try await transport.value(for: request)
+                if let translation = response.translations.first?.translation {
+                    jobLogger.info("Got translation for \(review.id) review")
+                    translatedReviews.append(review.adding(translation: translation))
+                } else {
+                    jobLogger.info("No translation for \(review.id) review")
+                    translatedReviews.append(review)
+                }
+            } catch {
+                jobLogger.error("Failed to translate \(review.id) with \(error)")
             }
         }
         return translatedReviews
@@ -82,7 +86,7 @@ extension Job {
 
     private func posting(reviews: [Review]) async -> Int? {
         var lastPostedReview: Int?
-        jobLogger.info("Posting reviews...")
+        jobLogger.info("Posting \(reviews.count) review(s)...")
         for review in reviews {
             let message = review.format(
                 template: mustacheTemplate,

@@ -104,7 +104,7 @@ extension Job {
                         }
                         return (job.countryCode, id)
                     } catch {
-                        logger.error("Failed to post reviews for \(job.countryCode)")
+                        logger.error("Failed to post reviews for \(job.countryCode) with \(error)")
                         return nil
                     }
                 }
