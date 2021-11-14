@@ -1,12 +1,12 @@
-public struct Review {
-    public let id: Int
+struct Review {
+    let id: Int
     let author: String
-    public let message: String
+    let message: String
     let rating: Int
     let translatedMessage: String?
 }
 
-public extension Review {
+extension Review {
     func adding(translation: String) -> Self {
         .init(
             id: id,

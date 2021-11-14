@@ -1,30 +1,13 @@
-import AppReview
 import ArgumentParser
 import Foundation
-import Logging
-import NIO
-
-#if DEBUG
-    let logLevel: Logger.Level = .debug
-#else
-    let logLevel: Logger.Level = .info
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
 #endif
-
-AppReview.logger.logLevel = logLevel
-let logger: Logger = {
-    var logger = Logger(label: "com.github.vox-humana.AppReviewPostman.Postman")
-    logger.logLevel = logLevel
-    return logger
-}()
-
-let group = MultiThreadedEventLoopGroup(numberOfThreads: 4)
-defer {
-    try! group.syncShutdownGracefully()
-}
+import Logging
 
 typealias SentStorage = [CountryCode: Int]
 
-struct Postman: ParsableCommand {
+struct Postman: AsyncParsableCommand {
     @Argument(help: "App identifier")
     var appId: String
 
@@ -57,33 +40,22 @@ struct Postman: ParsableCommand {
     )
     var translator: Job.Watson?
 
-    mutating func run() throws {
+    mutating func runAsync() async throws {
         let storageURL = storageFile.map(URL.init(fileURLWithPath:))
         var storage = storageURL
             .flatMap { try? Data(contentsOf: $0) }
             .flatMap { try? JSONDecoder().decode(SentStorage.self, from: $0) }
             ?? [:]
 
-        let futures = try (countries ?? CountryCode.allCases).map { code in
-            try Job(
-                appId: appId,
-                countryCode: code,
-                mustacheTemplate: template,
-                postURL: postURL,
-                translator: translator
-            )
-            .run(group: group, lastReviewId: storage[code] ?? 0)
-            .map { id in
-                (code, id)
-            }
-        }
-
-        let results = try EventLoopFuture.whenAllComplete(futures, on: group.next()).wait()
-        results.forEach { result in
-            if case let .success((code, id)) = result {
-                storage[code] = id
-            }
-        }
+        await Job.runJobs(
+            appId: appId,
+            countryCodes: countries ?? CountryCode.allCases,
+            mustacheTemplate: template,
+            postURL: postURL,
+            translator: translator,
+            transport: URLSession.shared,
+            storage: &storage
+        )
 
         if let fileURL = storageURL {
             let encoder = JSONEncoder()
@@ -96,7 +68,56 @@ struct Postman: ParsableCommand {
     }
 }
 
-Postman.main()
+@main
+enum App {
+    static func main() async {
+        await Postman.main()
+    }
+}
+
+extension Job {
+    static func runJobs(
+        appId: String,
+        countryCodes: [CountryCode],
+        mustacheTemplate: String,
+        postURL: URL,
+        translator: Watson?,
+        transport: NetworkTransport,
+        storage: inout SentStorage
+    ) async {
+        await withTaskGroup(of: (CountryCode, Int)?.self) { group in
+            for code in countryCodes {
+                let job = Job(
+                    appId: appId,
+                    countryCode: code,
+                    mustacheTemplate: mustacheTemplate,
+                    postURL: postURL,
+                    translator: translator,
+                    transport: transport
+                )
+                let lastSentId = storage[code]
+
+                group.addTask {
+                    do {
+                        guard let id = try await job.run(lastReviewId: lastSentId) else {
+                            return nil
+                        }
+                        return (job.countryCode, id)
+                    } catch {
+                        logger.error("Failed to post reviews for \(job.countryCode) with \(error)")
+                        return nil
+                    }
+                }
+            }
+
+            for await result in group {
+                if let (code, id) = result {
+                    storage[code] = id
+                }
+            }
+        }
+    }
+}
 
 // MARK: -
 

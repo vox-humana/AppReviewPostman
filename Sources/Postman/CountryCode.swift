@@ -5,7 +5,7 @@ import Foundation
 // ISO 3166-1 alpha-3 and alpha-2 codes:
 // https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
 // Last update date: 08-10-2021
-public enum CountryCode: String, CaseIterable, Codable {
+enum CountryCode: String, CaseIterable, Codable {
     case AF
     case AE
     case AG

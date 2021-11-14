@@ -1,4 +1,7 @@
 ![Build](https://github.com/vox-humana/AppReviewPostman/workflows/Build/badge.svg)
+[![Swift 5.5](https://img.shields.io/badge/Swift-5.5-yellow.svg)](https://developer.apple.com/swift)
+![Platforms](https://img.shields.io/badge/platforms-Linux%2C%20macOS-lightgrey.svg)
+
 # App Store Reviews Postman
 
 Swift script that checks new app store reviews in every App Store country, formats them right and sends into your favourite messenger via HTTP POST hook.
@@ -7,7 +10,7 @@ In this example postman sends two latest [Github iOS app](https://apps.apple.com
 ```
 postman 1477376905 --countries=au,se  
 --post-url=https://api.telegram.org/bot${TOKEN}/sendMessage  
---template='{"chat_id": "'${CHAT_ID}'", "text": "{{stars}}\n{{message}}\n{{contry_flag}} {{author}}"}'  
+--template='{"chat_id": "'${CHAT_ID}'", "text": "{{stars}}\n{{message}}\n{{country_flag}} {{author}}"}'  
 ```
 > ★★★★★  
 > GitHub is by far the best, not only because it’s the only one out there to offer a great mobile app (where you can even browse the source code) but also because its UI is sooo gooood!!!!!  
@@ -17,7 +20,7 @@ The same use case but posting in [TamTam](https://tamtam.chat) channel instead:
 ```
 postman 1477376905 --countries=au,se  
 --post-url="https://botapi.tamtam.chat/messages?access_token=${TOKEN}&chat_id=${CHAT_ID}"  
---template='{"text": "{{stars}}\n{{message}}\n{{contry_flag}} {{author}}"}'
+--template='{"text": "{{stars}}\n{{message}}\n{{country_flag}} {{author}}"}'
 ```
 
 ### Full usage

@@ -1,0 +1,149 @@
+{
+  "feed":
+  {
+    "author":
+    {
+      "name":
+      {
+        "label": "iTunes Store"
+      },
+      "uri":
+      {
+        "label": "http://www.apple.com/uk/itunes/"
+      }
+    },
+    "entry":
+    {
+      "author":
+      {
+        "uri":
+        {
+          "label": "https://itunes.apple.com/al/reviews/id834252659"
+        },
+        "name":
+        {
+          "label": "GeriolR"
+        },
+        "label": ""
+      },
+      "updated":
+      {
+        "label": "2021-10-02T11:28:40-07:00"
+      },
+      "im:rating":
+      {
+        "label": "3"
+      },
+      "im:version":
+      {
+        "label": "1.3.8"
+      },
+      "id":
+      {
+        "label": "7870240882"
+      },
+      "title":
+      {
+        "label": "Not alot of features for small countries of europe"
+      },
+      "content":
+      {
+        "label": "Make it better",
+        "attributes":
+        {
+          "type": "text"
+        }
+      },
+      "link":
+      {
+        "attributes":
+        {
+          "rel": "related",
+          "href": "https://itunes.apple.com/al/review?id=915056765&type=Purple%20Software"
+        }
+      },
+      "im:voteSum":
+      {
+        "label": "0"
+      },
+      "im:contentType":
+      {
+        "attributes":
+        {
+          "term": "Application",
+          "label": "Application"
+        }
+      },
+      "im:voteCount":
+      {
+        "label": "0"
+      }
+    },
+    "updated":
+    {
+      "label": "2021-10-13T03:55:53-07:00"
+    },
+    "rights":
+    {
+      "label": "Copyright 2008 Apple Inc."
+    },
+    "title":
+    {
+      "label": "iTunes Store: Customer Reviews"
+    },
+    "icon":
+    {
+      "label": "http://itunes.apple.com/favicon.ico"
+    },
+    "link":
+    [
+      {
+        "attributes":
+        {
+          "rel": "alternate",
+          "type": "text/html",
+          "href": "https://apps.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=al&id=25129"
+        }
+      },
+      {
+        "attributes":
+        {
+          "rel": "self",
+          "href": "https://mzstoreservices-int.dslb.apple.com/AL/rss/customerreviews/id=915056765/sortBy=mostRecent/json"
+        }
+      },
+      {
+        "attributes":
+        {
+          "rel": "first",
+          "href": "https://itunes.apple.com/al/rss/customerreviews/page=1/id=915056765/sortby=mostrecent/xml?urlDesc=/customerreviews/id=915056765/sortBy=mostRecent/json"
+        }
+      },
+      {
+        "attributes":
+        {
+          "rel": "last",
+          "href": "https://itunes.apple.com/al/rss/customerreviews/page=1/id=915056765/sortby=mostrecent/xml?urlDesc=/customerreviews/id=915056765/sortBy=mostRecent/json"
+        }
+      },
+      {
+        "attributes":
+        {
+          "rel": "previous",
+          "href": "https://itunes.apple.com/al/rss/customerreviews/page=1/id=915056765/sortby=mostrecent/xml?urlDesc=/customerreviews/id=915056765/sortBy=mostRecent/json"
+        }
+      },
+      {
+        "attributes":
+        {
+          "rel": "next",
+          "href": "https://itunes.apple.com/al/rss/customerreviews/page=2/id=915056765/sortby=mostrecent/xml?urlDesc=/customerreviews/id=915056765/sortBy=mostRecent/json"
+        }
+      }
+    ],
+    "id":
+    {
+      "label": "https://mzstoreservices-int.dslb.apple.com/AL/rss/customerreviews/id=915056765/sortBy=mostRecent/json"
+    }
+  }
+}
