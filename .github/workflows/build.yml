@@ -15,7 +15,11 @@ jobs:
         run: swift build -c release
 
       - name: Run tests
-        run: swift test
+        # Add path to `libswift_Concurrency.dylib`
+        # https://bugs.swift.org/browse/SR-15445
+        run: swift test \
+          -Xlinker -rpath -Xlinker \
+          "/Applications/Xcode_13.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/macosx"
 
       - name: Archive binary
         uses: actions/upload-artifact@v1

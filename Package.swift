@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "AppReviewPostman",
     platforms: [
-        .macOS(.v12),
+        .macOS(.v11),
     ],
     products: [
         .executable(name: "Postman", targets: ["Postman"]),
