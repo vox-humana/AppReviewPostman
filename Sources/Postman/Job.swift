@@ -46,7 +46,7 @@ extension Job {
     private func requestReviews(lastReviewId: Int?) async throws -> [Review] {
         let reviews: [Review] = try await transport.reviews(for: appId, countryCode: countryCode)
         // send only one the latest message if there is no previous history
-        guard let lastReviewId = lastReviewId else {
+        guard let lastReviewId else {
             jobLogger.info("No previous review id was provided, sending the last one")
             return Array(reviews.prefix(1))
         }
@@ -60,7 +60,7 @@ extension Job {
     }
 
     private func translate(reviews: [Review]) async -> [Review] {
-        guard let translator = translator else {
+        guard let translator else {
             jobLogger.info("No translator, skipping translation")
             return reviews
         }

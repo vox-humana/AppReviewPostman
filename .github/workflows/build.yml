@@ -4,28 +4,27 @@ on: [push]
 
 jobs:
   build-mac:
-    runs-on: macos-11
+    # https://github.com/actions/runner-images/tree/main/images/macos
+    runs-on: macos-12
     env:
-      DEVELOPER_DIR: /Applications/Xcode_13.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_14.2.app/Contents/Developer
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Build the app
-        run: swift build -c release
+        run: |
+          swift build -c release
+          mv $(swift build -c release --show-bin-path)/Postman .
 
       - name: Run tests
-        # Add path to `libswift_Concurrency.dylib`
-        # https://bugs.swift.org/browse/SR-15445
-        run: swift test \
-          -Xlinker -rpath -Xlinker \
-          "/Applications/Xcode_13.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/macosx"
+        run: swift test
 
       - name: Archive binary
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: postman-mac
-          path: .build/release/Postman
+          path: Postman
 
   build-linux:
     runs-on: ubuntu-latest
@@ -34,13 +33,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build the app
-        run: swift build -c release
+        run: |
+          swift build -c release
+          mv $(swift build -c release --show-bin-path)/Postman .
 
       - name: Run tests
         run: swift test
 
       - name: Archive binary
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: postman-linux
-          path: .build/release/Postman
+          path: Postman

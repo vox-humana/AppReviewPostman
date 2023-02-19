@@ -11,9 +11,9 @@ extension URLSession {
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         try await withCheckedThrowingContinuation { continuation in
             dataTask(with: request) { data, response, error in
-                if let error = error {
+                if let error {
                     continuation.resume(throwing: error)
-                } else if let data = data, let response = response {
+                } else if let data, let response {
                     continuation.resume(returning: (data, response))
                 } else {
                     continuation.resume(throwing: TransportError.emptyResponse)
@@ -26,9 +26,9 @@ extension URLSession {
     func data(from url: URL) async throws -> (Data, URLResponse) {
         try await withCheckedThrowingContinuation { continuation in
             dataTask(with: url) { data, response, error in
-                if let error = error {
+                if let error {
                     continuation.resume(throwing: error)
-                } else if let data = data, let response = response {
+                } else if let data, let response {
                     continuation.resume(returning: (data, response))
                 } else {
                     continuation.resume(throwing: TransportError.emptyResponse)

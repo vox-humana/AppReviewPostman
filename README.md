@@ -1,5 +1,5 @@
 ![Build](https://github.com/vox-humana/AppReviewPostman/workflows/Build/badge.svg)
-[![Swift 5.5](https://img.shields.io/badge/Swift-5.5-yellow.svg)](https://developer.apple.com/swift)
+[![Swift 5.7](https://img.shields.io/badge/Swift-5.7-yellow.svg)](https://developer.apple.com/swift)
 ![Platforms](https://img.shields.io/badge/platforms-Linux%2C%20macOS-lightgrey.svg)
 
 # App Store Reviews Postman

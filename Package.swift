@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 
 import PackageDescription
 
@@ -11,10 +11,10 @@ let package = Package(
         .executable(name: "Postman", targets: ["Postman"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.1"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.2"),
         .package(url: "https://github.com/AlwaysRightInstitute/mustache.git", from: "1.0.0"),
-        .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.9.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.0"),
     ],
     targets: [
         .executableTarget(
@@ -29,7 +29,7 @@ let package = Package(
             name: "PostmanTests",
             dependencies: [
                 "Postman",
-                "SnapshotTesting",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             resources: [
                 .copy("feed.json"),
