@@ -123,11 +123,11 @@ extension Job {
 
 private extension Review.MustacheKeys {
     static var allSupportedKeys: String {
-        Self.allCases.map(\.rawValue).joined(separator: ", ")
+        allCases.map(\.rawValue).joined(separator: ", ")
     }
 }
 
-extension URL: ExpressibleByArgument {
+extension URL: @retroactive ExpressibleByArgument {
     public init?(argument: String) {
         self.init(string: argument)
     }
