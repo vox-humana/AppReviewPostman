@@ -5,12 +5,12 @@ on: [push]
 jobs:
   build-mac:
     # https://github.com/actions/runner-images/tree/main/images/macos
-    runs-on: macos-12
+    runs-on: macos-15
     env:
-      DEVELOPER_DIR: /Applications/Xcode_14.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build the app
         run: |
@@ -21,7 +21,7 @@ jobs:
         run: swift test
 
       - name: Archive binary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: postman-mac
           path: Postman
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build the app
         run: |
@@ -41,7 +41,7 @@ jobs:
         run: swift test
 
       - name: Archive binary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: postman-linux
           path: Postman

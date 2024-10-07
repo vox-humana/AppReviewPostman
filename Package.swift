@@ -11,10 +11,10 @@ let package = Package(
         .executable(name: "Postman", targets: ["Postman"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.2"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.6.1"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
         .package(url: "https://github.com/AlwaysRightInstitute/mustache.git", from: "1.0.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.5"),
     ],
     targets: [
         .executableTarget(
@@ -29,7 +29,7 @@ let package = Package(
             name: "PostmanTests",
             dependencies: [
                 "Postman",
-                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "InlineSnapshotTesting", package: "swift-snapshot-testing"),
             ],
             resources: [
                 .copy("feed.json"),

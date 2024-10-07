@@ -40,7 +40,7 @@ struct Postman: AsyncParsableCommand {
     )
     var translator: Job.Watson?
 
-    mutating func runAsync() async throws {
+    func run() async throws {
         let storageURL = storageFile.map(URL.init(fileURLWithPath:))
         var storage = storageURL
             .flatMap { try? Data(contentsOf: $0) }
@@ -123,11 +123,11 @@ extension Job {
 
 private extension Review.MustacheKeys {
     static var allSupportedKeys: String {
-        Self.allCases.map(\.rawValue).joined(separator: ", ")
+        allCases.map(\.rawValue).joined(separator: ", ")
     }
 }
 
-extension URL: ExpressibleByArgument {
+extension URL: @retroactive ExpressibleByArgument {
     public init?(argument: String) {
         self.init(string: argument)
     }
